@@ -16,5 +16,13 @@ public class BankAccount {
     private Client client;
     private Date creationDate;
 
-
+    public String showInfoBalance(){
+        final StringBuilder sb = new StringBuilder("BankAccount{");
+        sb.append("accountNumber=").append(accountNumber);
+        sb.append(", balance=").append(balance);
+        sb.append(" BYN");
+        sb.append(", creationDate=").append(creationDate);
+        sb.append('}');
+        return sb.toString();
+    }
 }

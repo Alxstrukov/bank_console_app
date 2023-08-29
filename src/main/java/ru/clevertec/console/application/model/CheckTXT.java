@@ -11,6 +11,8 @@ public class CheckTXT implements CheckCreatable {
 
     //записать чек в txt файл
     public void createCheck(Transaction transaction) {
+        System.out.println("The method for creating the receipt called the thread -> " + Thread.currentThread().getName());
+        System.out.println();
         try (PrintWriter printWriter = new PrintWriter(CHECK_PATH + transaction.getTransactionNumber() + ".txt")) {
             String dateString = new SimpleDateFormat("dd-MM-yyyy").format(transaction.getDate());
 
@@ -56,7 +58,7 @@ public class CheckTXT implements CheckCreatable {
                 translateName = "Перевод   ";
             }
             break;
-            default:{
+            default: {
                 translateName = "";
             }
         }

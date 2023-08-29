@@ -3,15 +3,14 @@ package ru.clevertec.console.application.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
-import javax.management.ConstructorParameters;
+import java.util.ArrayList;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class User {
     private Client client;
-    private Bank bank;
-    private BankAccount bankAccount;
+    private Bank bank = new Bank(119, "Clever-Bank");
+    private ArrayList<BankAccount> bankAccounts = new ArrayList<>();
 }

@@ -96,10 +96,13 @@ public class SqlQuery {
             "  AND operation = 'TRANSFER MONEY'\n" +
             "  ORDER BY transactions.id\n" +
             "  DESC LIMIT 1";
-    public static final String IS_CLIENT_OF_BANK = "SELECT id FROM clients WHERE id = ";
+    public static final String IS_CLIENT_OF_BANK = "SELECT client_id " +
+            "FROM bank_accounts WHERE bank_id = 119 AND client_id = ";
     public static final String IS_BANK_ACCOUNT_OF_BANK = "SELECT account_number FROM bank_accounts WHERE account_number = ";
     public static final String SELECT_NEW_CLIENT_ID = "SELECT id FROM clients " +
             "WHERE last_name = '%s' AND first_name = '%s' ORDER BY clients.id DESC LIMIT 1;";
     public static final String SELECT_NEW_BANK_ACCOUNT_ID = "SELECT account_number FROM bank_accounts " +
             "WHERE client_id = %s ORDER BY bank_accounts.account_number DESC LIMIT 1;";
+    public static final String SELECT_USER_ALL_BANK_ACCOUNTS = "SELECT * " +
+            "FROM bank_accounts WHERE bank_id = 119 AND client_id = ";
 }

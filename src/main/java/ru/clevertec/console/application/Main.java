@@ -3,6 +3,9 @@ package ru.clevertec.console.application;
 import ru.clevertec.console.application.services.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
 
 
 public class Main {
@@ -14,6 +17,10 @@ public class Main {
 //        os.receiveMoney(account, BigDecimal.valueOf(140.30));
         ConsoleService consoleService = new ConsoleService();
         consoleService.startApp();
+        System.out.println("main===main===main===main===main===main===main===main===main");
+
+
+
     }
 
 

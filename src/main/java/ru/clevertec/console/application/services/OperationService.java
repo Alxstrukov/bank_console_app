@@ -12,7 +12,7 @@ import java.sql.SQLException;
 
 public class OperationService {
     //операция пополнение счета
-    synchronized public void addMoney(BankAccount bankAccount, BigDecimal amount) {
+    public void addMoney(BankAccount bankAccount, BigDecimal amount) {
         try (PreparedStatement ps = DBService.createPreparedStatement(SqlQuery.ADD_MONEY);) {
             ps.setBigDecimal(1, amount);
             ps.setInt(2, bankAccount.getAccountNumber());

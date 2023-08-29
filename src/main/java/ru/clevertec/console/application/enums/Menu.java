@@ -5,4 +5,6 @@ public enum Menu {
     MAIN,
     EXIT,
     VIEW_BALANCE,
+    ADD_MONEY_SELECT,
+    ADD_MONEY_PUSH
 }
