@@ -44,10 +44,13 @@ public class ConsoleService extends Thread {
                     enterReceiveMoney();
                 }
                 break;
-                case TRANSFER_MONEY: {
-
+                case TRANSFER_MONEY_BY_CLEVER_BANK: {
+                    enterTransferMoneyByCleverBank();
                 }
                 break;
+                case TRANSFER_MONEY_BY_OTHER_BANK: {
+                    enterTransferMoneyByOtherBank();
+                }
                 default: {
 
                 }
@@ -201,11 +204,11 @@ public class ConsoleService extends Thread {
             }
             break;
             case 4: {
-                menuStatus = AUTHORIZED;
+                menuStatus = TRANSFER_MONEY_BY_CLEVER_BANK;
             }
             break;
             case 5: {
-                menuStatus = AUTHORIZED;
+                menuStatus = TRANSFER_MONEY_BY_OTHER_BANK;
             }
             break;
             case 6: {
@@ -246,8 +249,10 @@ public class ConsoleService extends Thread {
 
     private Menu enterAddMoneyMenu() {
         System.out.println("-------------------Clever-Bank--------------------");
-        System.out.println("-----------------ADD MONEY MENU--------------------");
-        System.out.printf("\n Please, enter the bank account number\n");
+        System.out.println("--------------------ADD MONEY---------------------");
+        System.out.printf("\nPlease, select your bank account number\n\n");
+        System.out.println("0. Go back");
+        System.out.println("***    Enter the item number and press Enter    ***");
 
         if (!SCANNER.hasNextInt()) {
             System.out.println("INCORRECT INPUT! Enter a number");
@@ -255,67 +260,220 @@ public class ConsoleService extends Thread {
             return menuStatus;
         }
         int accountNumber = SCANNER.nextInt();
-        if (isBankAccountFromUser(accountNumber)) {
-            System.out.printf("\n Please, enter the amount\n");
 
-            if (!SCANNER.hasNextBigDecimal()) {
-                System.out.println("INCORRECT INPUT! Enter a number");
-                SCANNER.nextLine();
-                return menuStatus;
+        switch (accountNumber) {
+            case 0: {
+                menuStatus = MAIN;
             }
+            break;
+            default: {
+                if (!isBankAccountFromUser(accountNumber)) {
+                    System.out.println("Bank account is not found");
+                    menuStatus = ADD_MONEY;
+                } else {
+                    System.out.printf("\nPlease, enter the amount\n");
 
-            BigDecimal amount = SCANNER.nextBigDecimal();
-            BankAccount bankAccount = getBankAccountByAccountNumber(accountNumber);
+                    if (!SCANNER.hasNextBigDecimal()) {
+                        System.out.println("INCORRECT INPUT! Enter a number");
+                        SCANNER.nextLine();
+                        return menuStatus;
+                    }
 
-            OperationService operationService = new OperationService();
-            operationService.addMoney(bankAccount, amount);
-            bankAccount.addBalance(amount);
+                    BigDecimal amount = SCANNER.nextBigDecimal();
+                    BankAccount bankAccount = getBankAccountByAccountNumber(accountNumber);
 
-            menuStatus = MAIN;
-            System.out.println("Successfully add money");
-        } else {
-            System.out.println("Bank account is not found");
+                    OperationService operationService = new OperationService();
+                    operationService.addMoney(bankAccount, amount);
+                    bankAccount.addBalance(amount);
+
+                    System.out.println("Successfully add money");
+                    menuStatus = MAIN;
+                }
+            }
+            break;
         }
         return menuStatus;
     }
 
     private Menu enterReceiveMoney() {
         System.out.println("-------------------Clever-Bank--------------------");
-        System.out.println("-----------------RECEIVE MONEY MENU--------------------");
-        System.out.printf("\n Please, enter the bank account number\n");
+        System.out.println("------------------RECEIVE MONEY-------------------");
+        System.out.printf("\nPlease, select your bank account number\n\n");
+        System.out.println("0. Go back");
+        System.out.println("***    Enter the item number and press Enter    ***");
 
         if (!SCANNER.hasNextInt()) {
             System.out.println("INCORRECT INPUT! Enter a number");
             SCANNER.nextLine();
             return menuStatus;
         }
+
         int accountNumber = SCANNER.nextInt();
-        if (isBankAccountFromUser(accountNumber)) {
-            System.out.printf("\n Please, enter the amount\n");
 
-            if (!SCANNER.hasNextBigDecimal()) {
-                System.out.println("INCORRECT INPUT! Enter a number");
-                SCANNER.nextLine();
-                return menuStatus;
+        switch (accountNumber) {
+            case 0: {
+                menuStatus = MAIN;
             }
+            break;
+            default: {
+                if (!isBankAccountFromUser(accountNumber)) {
+                    System.out.println("Bank account is not found");
+                    menuStatus = RECEIVE_MONEY;
+                } else {
+                    System.out.printf("\n Please, enter the amount\n");
 
-            BigDecimal amount = SCANNER.nextBigDecimal();
-            BankAccount bankAccount = getBankAccountByAccountNumber(accountNumber);
+                    if (!SCANNER.hasNextBigDecimal()) {
+                        System.out.println("INCORRECT INPUT! Enter a number");
+                        SCANNER.nextLine();
+                        return menuStatus;
+                    }
 
-            OperationService operationService = new OperationService();
-            if (operationService.receiveMoney(bankAccount, amount)) {
-                bankAccount.receiveBalance(amount);
-                System.out.println("Successfully receive money");
-            }else {
-                System.out.println("****** NOT ENOUGH MONEY ******");
+                    BigDecimal amount = SCANNER.nextBigDecimal();
+                    BankAccount bankAccount = getBankAccountByAccountNumber(accountNumber);
+
+                    OperationService operationService = new OperationService();
+                    if (operationService.receiveMoney(bankAccount, amount)) {
+                        bankAccount.receiveBalance(amount);
+                        System.out.println("Successfully receive money");
+                    } else {
+                        System.out.println("****** NOT ENOUGH MONEY ******");
+                    }
+                    menuStatus = MAIN;
+                }
             }
-            menuStatus = MAIN;
-        } else {
-            System.out.println("Bank account is not found");
+            break;
         }
         return menuStatus;
     }
 
+    private Menu enterTransferMoneyByCleverBank() {
+        System.out.println("-------------------Clever-Bank--------------------");
+        System.out.println("-----TRANSFER MONEY TO THE CLEVER-BANK CLIENT-----");
+        System.out.printf("\nPlease, select your bank account number\n");
+        System.out.println("0. Go back");
+        System.out.println("***    Enter the item number and press Enter    ***");
+
+        if (!SCANNER.hasNextInt()) {
+            System.out.println("INCORRECT INPUT! Enter a number");
+            SCANNER.nextLine();
+            return menuStatus;
+        }
+
+        int accountNumber = SCANNER.nextInt();
+        switch (accountNumber) {
+            case 0: {
+                menuStatus = MAIN;
+            }
+            break;
+            default: {
+                if (!isBankAccountFromUser(accountNumber)) {
+                    System.out.println("Bank account number is not found");
+                    menuStatus = TRANSFER_MONEY_BY_CLEVER_BANK;
+                } else {
+                    System.out.printf("\nPlease, enter the Clever-Bank client bank account number\n");
+                    if (!SCANNER.hasNextInt()) {
+                        System.out.println("INCORRECT INPUT! Enter a number");
+                        SCANNER.nextLine();
+                        return menuStatus = TRANSFER_MONEY_BY_CLEVER_BANK;
+                    }
+
+                    int recipientAccountNumber = SCANNER.nextInt();
+                    if (!isBankAccountOfCleverBank(recipientAccountNumber)) {
+                        System.out.println("*** THE BANK ACCOUNT NUMBER DOES NOT BELONG TO CLEVER-BANK ***");
+                        SCANNER.nextLine();
+                        return menuStatus = TRANSFER_MONEY_BY_CLEVER_BANK;
+                    } else {
+                        System.out.println("Please, enter the amount");
+                        if (!SCANNER.hasNextBigDecimal()) {
+                            System.out.println("INCORRECT INPUT! Enter a number");
+                            SCANNER.nextLine();
+                            return menuStatus = TRANSFER_MONEY_BY_CLEVER_BANK;
+                        }
+
+                        BigDecimal amount = SCANNER.nextBigDecimal();
+                        BankAccount bankAccount = getBankAccountByAccountNumber(accountNumber);
+
+                        OperationService operationService = new OperationService();
+                        if (operationService.transferMoney(bankAccount, recipientAccountNumber, operationService.CLEVER_BANK_ID, amount)) {
+                            bankAccount.receiveBalance(amount);
+                            System.out.println("Money was successfully transferred to the Clever-Bank client");
+                        } else {
+                            System.out.println("****** NOT ENOUGH MONEY ******");
+                        }
+                        menuStatus = MAIN;
+                    }
+                }
+            }
+            break;
+        }
+        return menuStatus;
+    }
+
+    private Menu enterTransferMoneyByOtherBank() {
+        System.out.println("-------------------Clever-Bank--------------------");
+        System.out.println("-----TRANSFER MONEY TO THE OTHER-BANK CLIENT-----");
+        System.out.printf("\nPlease, select your bank account number\n");
+        System.out.println("0. Go back");
+        System.out.println("***    Enter the item number and press Enter    ***");
+
+        if (!SCANNER.hasNextInt()) {
+            System.out.println("INCORRECT INPUT! Enter a number");
+            SCANNER.nextLine();
+            return menuStatus;
+        }
+
+        int accountNumber = SCANNER.nextInt();
+        switch (accountNumber) {
+            case 0: {
+                menuStatus = MAIN;
+            }
+            break;
+            default: {
+                if (!isBankAccountFromUser(accountNumber)) {
+                    System.out.println("Bank account number is not found");
+                    menuStatus = TRANSFER_MONEY_BY_OTHER_BANK;
+                } else {
+                    System.out.printf("\nPlease, enter the other bank client bank account number\n");
+                    if (!SCANNER.hasNextInt()) {
+                        System.out.println("INCORRECT INPUT! Enter a number");
+                        SCANNER.nextLine();
+                        return menuStatus = TRANSFER_MONEY_BY_OTHER_BANK;
+                    }
+
+                    int recipientAccountNumber = SCANNER.nextInt();
+                    if (!isBankAccountOfBank(recipientAccountNumber)) {
+                        System.out.println("*** THE BANK ACCOUNT NUMBER DOES NOT EXIST ***");
+                        SCANNER.nextLine();
+                        return menuStatus = TRANSFER_MONEY_BY_OTHER_BANK;
+                    } else {
+                        System.out.println("Please, enter the amount");
+                        if (!SCANNER.hasNextBigDecimal()) {
+                            System.out.println("INCORRECT INPUT! Enter a number");
+                            SCANNER.nextLine();
+                            return menuStatus = TRANSFER_MONEY_BY_OTHER_BANK;
+                        }
+
+                        BigDecimal amount = SCANNER.nextBigDecimal();
+                        BankAccount bankAccount = getBankAccountByAccountNumber(accountNumber);
+
+                        //считываю банковский счет получателя с БД и получаю его номер
+                        int recipientBankId = getRecipientBankIdByAccountNumber(recipientAccountNumber);
+
+                        OperationService operationService = new OperationService();
+                        if (operationService.transferMoney(bankAccount, recipientAccountNumber, recipientBankId, amount)) {
+                            bankAccount.receiveBalance(amount);
+                            System.out.println("Money was successfully transferred to the client other bank ");
+                        } else {
+                            System.out.println("****** NOT ENOUGH MONEY ******");
+                        }
+                        menuStatus = MAIN;
+                    }
+                }
+            }
+            break;
+        }
+        return menuStatus;
+    }
 
     //потом эти комменты удалю
     //=================================ПРОЧИЕ МЕТОДЫ=============================================//
@@ -354,9 +512,14 @@ public class ConsoleService extends Thread {
         return isEmptyInDataBaseById(id, SqlQuery.IS_CLIENT_OF_BANK);
     }
 
-    //проверка, есть ли такой номер счета в банке
+    //проверка, существует ли такой номер счёта в базе данных
     private boolean isBankAccountOfBank(int accountNumber) {
-        return isEmptyInDataBaseById(accountNumber, SqlQuery.IS_BANK_ACCOUNT_OF_BANK);
+        return isEmptyInDataBaseById(accountNumber, SqlQuery.IS_BANK_ACCOUNT_OF_OTHER_BANK);
+    }
+
+    //проверка, принадлежит ли такой номер счёта банку Clever-Bank
+    private boolean isBankAccountOfCleverBank(int accountNumber) {
+        return isEmptyInDataBaseById(accountNumber, SqlQuery.IS_BANK_ACCOUNT_OF_CLEVER_BANK);
     }
 
     //принадлежит ли номер счета пользователю
@@ -419,5 +582,10 @@ public class ConsoleService extends Thread {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private int getRecipientBankIdByAccountNumber(int accountNumber) {
+        BankAccountService bankAccountService = new BankAccountService();
+        return bankAccountService.readBankAccount(accountNumber).getBank().getID();
     }
 }

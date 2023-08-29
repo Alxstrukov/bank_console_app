@@ -4,6 +4,7 @@ public class SqlQuery {
     public static final String ADD_MONEY_ENUM_DB = "'ADD MONEY'";
     public static final String RECEIVE_MONEY_ENUM_DB = "'RECEIVE MONEY'";
     public static final String TRANSFER_MONEY_ENUM_DB = "'TRANSFER MONEY'";
+    public static final String CLEVER_BANK_ID = "119";
     public static final String SELECT_BANK_ACCOUNTS = "SELECT clients.id as client_id,\n" +
             "       clients.last_name,\n" +
             "       clients.first_name,\n" +
@@ -98,7 +99,9 @@ public class SqlQuery {
             "  DESC LIMIT 1";
     public static final String IS_CLIENT_OF_BANK = "SELECT client_id " +
             "FROM bank_accounts WHERE bank_id = 119 AND client_id = ";
-    public static final String IS_BANK_ACCOUNT_OF_BANK = "SELECT account_number FROM bank_accounts WHERE account_number = ";
+    public static final String IS_BANK_ACCOUNT_OF_OTHER_BANK = "SELECT account_number FROM bank_accounts WHERE account_number = ";
+    public static final String IS_BANK_ACCOUNT_OF_CLEVER_BANK = "SELECT account_number" +
+            " FROM bank_accounts WHERE bank_id = " + CLEVER_BANK_ID + " AND account_number = ";
     public static final String SELECT_NEW_CLIENT_ID = "SELECT id FROM clients " +
             "WHERE last_name = '%s' AND first_name = '%s' ORDER BY clients.id DESC LIMIT 1;";
     public static final String SELECT_NEW_BANK_ACCOUNT_ID = "SELECT account_number FROM bank_accounts " +
