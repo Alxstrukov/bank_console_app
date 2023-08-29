@@ -1,11 +1,8 @@
 package ru.clevertec.console.application;
 
-import ru.clevertec.console.application.services.*;
+import ru.clevertec.console.application.services.ConsoleService;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Predicate;
 
 
 public class Main {

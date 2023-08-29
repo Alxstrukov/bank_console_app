@@ -1,6 +1,6 @@
 package ru.clevertec.console.application.model;
 
-import ru.clevertec.console.application.interfaces.CheckCreatable;
+import ru.clevertec.console.application.services.CheckCreatable;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,9 +10,7 @@ import java.text.SimpleDateFormat;
 public class CheckTXT implements CheckCreatable {
 
     //записать чек в txt файл
-    public void createCheck(Transaction transaction) {
-        System.out.println("The method for creating the receipt called the thread -> " + Thread.currentThread().getName());
-        System.out.println();
+    synchronized public void createCheck(Transaction transaction) {
         try (PrintWriter printWriter = new PrintWriter(CHECK_PATH + transaction.getTransactionNumber() + ".txt")) {
             String dateString = new SimpleDateFormat("dd-MM-yyyy").format(transaction.getDate());
 

@@ -11,24 +11,31 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class OperationService {
+    final int CLEVER_BANK_ID = 119;
+
     //операция пополнение счета
-    public void addMoney(BankAccount bankAccount, BigDecimal amount) {
-        try (PreparedStatement ps = DBService.createPreparedStatement(SqlQuery.ADD_MONEY);) {
-            ps.setBigDecimal(1, amount);
-            ps.setInt(2, bankAccount.getAccountNumber());
-            ps.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
+    public boolean addMoney(BankAccount bankAccount, BigDecimal amount) {
+        boolean status = false;
+        if (!status) {
+            try (PreparedStatement ps = DBService.createPreparedStatement(SqlQuery.ADD_MONEY);) {
+                ps.setBigDecimal(1, amount);
+                ps.setInt(2, bankAccount.getAccountNumber());
+                ps.executeUpdate();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            TransactionService transactionService = new TransactionService();
+            transactionService.createTransactionAddMoney(bankAccount.getAccountNumber(), amount, bankAccount.getBank().getID());
+            Transaction transaction = transactionService.getLatestTransactionByOperation(bankAccount.getAccountNumber(), SqlQuery.SELECT_LATEST_TRANSACTION_ADD);
+            CheckTXT checkTxt = new CheckTXT();
+            checkTxt.createCheck(transaction);
+            status = true;
         }
-        TransactionService transactionService = new TransactionService();
-        transactionService.createTransactionAddMoney(bankAccount.getAccountNumber(), amount, bankAccount.getBank().getID());
-        Transaction transaction = transactionService.getLatestTransactionByOperation(bankAccount.getAccountNumber(), SqlQuery.SELECT_LATEST_TRANSACTION_ADD);
-        CheckTXT checkTxt = new CheckTXT();
-        checkTxt.createCheck(transaction);
+        return status;
     }
 
     //операция снятие средств со счета
-    synchronized public void receiveMoney(BankAccount bankAccount, BigDecimal amount) {
+    synchronized public boolean receiveMoney(BankAccount bankAccount, BigDecimal amount) {
         if (isEnoughMoney(bankAccount, amount)) {
             try (PreparedStatement preparedStatement = DBService.createPreparedStatement(SqlQuery.RECEIVE_MONEY)) {
                 preparedStatement.setBigDecimal(1, amount);
@@ -42,12 +49,14 @@ public class OperationService {
             Transaction transaction = transactionService.getLatestTransactionByOperation(bankAccount.getAccountNumber(), SqlQuery.SELECT_LATEST_TRANSACTION_RECEIVE);
             CheckTXT checkTxt = new CheckTXT();
             checkTxt.createCheck(transaction);
+            return true;
         }
+        return false;
     }
 
     // операция перевод средств клиенту Clever-Bank
-    synchronized public void transferMoneyByCleverBank(BankAccount bankAccount, int bankAccountNumber, BigDecimal amount) {
-        final int CLEVER_BANK_ID = 119;
+    synchronized public boolean transferMoneyByCleverBank(BankAccount bankAccount, int bankAccountNumber, BigDecimal amount) {
+
         if (isThereAccountNumber(CLEVER_BANK_ID, bankAccountNumber) && isEnoughMoney(bankAccount, amount)) {
             try (PreparedStatement preparedStatement = DBService.createPreparedStatement(SqlQuery.TRANSFER_MONEY)) {
                 preparedStatement.setBigDecimal(1, amount);
@@ -65,12 +74,14 @@ public class OperationService {
             Transaction transaction = transactionService.getLatestTransactionByOperation(bankAccount.getAccountNumber(), SqlQuery.SELECT_LATEST_TRANSACTION_TRANSFER);
             CheckTXT checkTxt = new CheckTXT();
             checkTxt.createCheck(transaction);
+            return true;
         }
+        return false;
     }
 
     //перевод средств
-    synchronized public void transferMoney(BankAccount bankAccount, int bankAccountNumber, int bankId, BigDecimal amount) {
-        try (PreparedStatement preparedStatement = DBService.createPreparedStatement(SqlQuery.TRANSFER_MONEY)) {
+    synchronized public boolean transferMoney(BankAccount bankAccount, int bankAccountNumber, int bankId, BigDecimal amount) {
+        /*try (PreparedStatement preparedStatement = DBService.createPreparedStatement(SqlQuery.TRANSFER_MONEY)) {
             if (isThereAccountNumber(bankId, bankAccountNumber) && isEnoughMoney(bankAccount, amount)) {
                 preparedStatement.setBigDecimal(1, amount);
                 preparedStatement.setInt(2, bankAccount.getAccountNumber());
@@ -87,7 +98,27 @@ public class OperationService {
                 bankAccount.getBank().getID(), bankId, amount);
         Transaction transaction = transactionService.getLatestTransactionByOperation(bankAccount.getAccountNumber(), SqlQuery.SELECT_LATEST_TRANSACTION_TRANSFER);
         CheckTXT checkTxt = new CheckTXT();
-        checkTxt.createCheck(transaction);
+        checkTxt.createCheck(transaction);*/
+        if (isThereAccountNumber(bankId, bankAccountNumber) && isEnoughMoney(bankAccount, amount)) {
+            try (PreparedStatement preparedStatement = DBService.createPreparedStatement(SqlQuery.TRANSFER_MONEY)) {
+                preparedStatement.setBigDecimal(1, amount);
+                preparedStatement.setInt(2, bankAccount.getAccountNumber());
+                preparedStatement.setBigDecimal(3, amount);
+                preparedStatement.setInt(4, bankAccountNumber);
+                preparedStatement.executeUpdate();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            TransactionService transactionService = new TransactionService();
+            transactionService.createTransactionTransferMoney(bankAccount.getAccountNumber(),
+                    bankAccountNumber,
+                    bankAccount.getBank().getID(), bankId, amount);
+            Transaction transaction = transactionService.getLatestTransactionByOperation(bankAccount.getAccountNumber(), SqlQuery.SELECT_LATEST_TRANSACTION_TRANSFER);
+            CheckTXT checkTxt = new CheckTXT();
+            checkTxt.createCheck(transaction);
+            return true;
+        }
+        return false;
     }
 
 

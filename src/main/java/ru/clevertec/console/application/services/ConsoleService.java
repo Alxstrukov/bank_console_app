@@ -14,9 +14,9 @@ import java.util.Scanner;
 
 import static ru.clevertec.console.application.enums.Menu.*;
 
-public class ConsoleService extends Thread{
+public class ConsoleService extends Thread {
     private User user = new User();
-    private final Scanner SCANNER = new Scanner(System.in);
+    private Scanner SCANNER = new Scanner(System.in);
     private Menu menuStatus;
 
     //стартануть приложение
@@ -36,12 +36,16 @@ public class ConsoleService extends Thread{
                     enterViewBalanceMenu();
                 }
                 break;
-                case ADD_MONEY_SELECT: {
-                    enterAddMoneySelectMenu();
+                case ADD_MONEY: {
+                    enterAddMoneyMenu();
                 }
                 break;
-                case ADD_MONEY_PUSH: {
-                    enterAddMoneyPushMenu();
+                case RECEIVE_MONEY: {
+                    enterReceiveMoney();
+                }
+                break;
+                case TRANSFER_MONEY: {
+
                 }
                 break;
                 default: {
@@ -189,11 +193,11 @@ public class ConsoleService extends Thread{
             }
             break;
             case 2: {
-                menuStatus = ADD_MONEY_SELECT;
+                menuStatus = ADD_MONEY;
             }
             break;
             case 3: {
-                menuStatus = AUTHORIZED;
+                menuStatus = RECEIVE_MONEY;
             }
             break;
             case 4: {
@@ -240,7 +244,7 @@ public class ConsoleService extends Thread{
         return menuStatus;
     }
 
-    private Menu enterAddMoneySelectMenu() {
+    private Menu enterAddMoneyMenu() {
         System.out.println("-------------------Clever-Bank--------------------");
         System.out.println("-----------------ADD MONEY MENU--------------------");
         System.out.printf("\n Please, enter the bank account number\n");
@@ -252,38 +256,78 @@ public class ConsoleService extends Thread{
         }
         int accountNumber = SCANNER.nextInt();
         if (isBankAccountFromUser(accountNumber)) {
-            menuStatus = ADD_MONEY_PUSH;
+            System.out.printf("\n Please, enter the amount\n");
+
+            if (!SCANNER.hasNextBigDecimal()) {
+                System.out.println("INCORRECT INPUT! Enter a number");
+                SCANNER.nextLine();
+                return menuStatus;
+            }
+
+            BigDecimal amount = SCANNER.nextBigDecimal();
+            BankAccount bankAccount = getBankAccountByAccountNumber(accountNumber);
+
+            OperationService operationService = new OperationService();
+            operationService.addMoney(bankAccount, amount);
+            bankAccount.addBalance(amount);
+
+            menuStatus = MAIN;
+            System.out.println("Successfully add money");
         } else {
             System.out.println("Bank account is not found");
         }
         return menuStatus;
     }
 
-    private Menu enterAddMoneyPushMenu() {
+    private Menu enterReceiveMoney() {
         System.out.println("-------------------Clever-Bank--------------------");
-        System.out.println("-----------------ADD MONEY MENU--------------------");
-        System.out.printf("\n Please, enter the amount\n");
+        System.out.println("-----------------RECEIVE MONEY MENU--------------------");
+        System.out.printf("\n Please, enter the bank account number\n");
 
-        if (!SCANNER.hasNextBigDecimal()) {
+        if (!SCANNER.hasNextInt()) {
             System.out.println("INCORRECT INPUT! Enter a number");
             SCANNER.nextLine();
             return menuStatus;
         }
+        int accountNumber = SCANNER.nextInt();
+        if (isBankAccountFromUser(accountNumber)) {
+            System.out.printf("\n Please, enter the amount\n");
 
-        System.out.printf("\n Please, enter the amount\n");
-        BigDecimal amount = SCANNER.nextBigDecimal();
+            if (!SCANNER.hasNextBigDecimal()) {
+                System.out.println("INCORRECT INPUT! Enter a number");
+                SCANNER.nextLine();
+                return menuStatus;
+            }
 
-        System.out.println("The method for creating the receipt called the thread -> " + Thread.currentThread().getName());
-        OperationService operationService = new OperationService();
-        operationService.addMoney(user.getBankAccounts().get(0), amount);
+            BigDecimal amount = SCANNER.nextBigDecimal();
+            BankAccount bankAccount = getBankAccountByAccountNumber(accountNumber);
 
-        System.out.println("Successfully add money");
-
-        return menuStatus = MAIN;
+            OperationService operationService = new OperationService();
+            if (operationService.receiveMoney(bankAccount, amount)) {
+                bankAccount.receiveBalance(amount);
+                System.out.println("Successfully receive money");
+            }else {
+                System.out.println("****** NOT ENOUGH MONEY ******");
+            }
+            menuStatus = MAIN;
+        } else {
+            System.out.println("Bank account is not found");
+        }
+        return menuStatus;
     }
+
 
     //потом эти комменты удалю
     //=================================ПРОЧИЕ МЕТОДЫ=============================================//
+
+    //получить нужный банковский счет пользователя по номеру счета
+    private BankAccount getBankAccountByAccountNumber(int accountNumber) {
+        BankAccount bankAccount = user.getBankAccounts()
+                .stream()
+                .filter(it -> it.getAccountNumber() == accountNumber)
+                .findFirst().get();
+        return bankAccount;
+    }
 
     //получить все счета пользователя
     private void readAllUserBankAccounts(int userId) {

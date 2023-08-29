@@ -1,4 +1,4 @@
-package ru.clevertec.console.application.interfaces;
+package ru.clevertec.console.application.services;
 
 import ru.clevertec.console.application.model.Transaction;
 
