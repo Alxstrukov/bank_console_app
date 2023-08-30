@@ -1,0 +1,73 @@
+package ru.clevertec.console.application.menu_run;
+
+import ru.clevertec.console.application.enums.Menu;
+import ru.clevertec.console.application.model.BankAccount;
+import ru.clevertec.console.application.model.User;
+import ru.clevertec.console.application.services.OperationService;
+
+import java.math.BigDecimal;
+
+import static ru.clevertec.console.application.enums.Menu.MAIN;
+import static ru.clevertec.console.application.enums.Menu.RECEIVE_MONEY;
+
+public class ReceiveMoneyMenu extends AbstractMenu {
+    public ReceiveMoneyMenu(User user, Menu status) {
+        super(user, status);
+    }
+
+    @Override
+    public Menu run() {
+        showReceiveMoney();
+        if (!SCANNER.hasNextInt()) {
+            isValidInput(menuStatus);
+        }
+        int accountNumber = SCANNER.nextInt();
+        switch (accountNumber) {
+            case 0: {
+                menuStatus = MAIN;
+            }
+            break;
+            default: {
+                runReceiveMoney(accountNumber);
+            }
+            break;
+        }
+        return menuStatus;
+    }
+
+    private void showReceiveMoney() {
+        System.out.println("-------------------Clever-Bank--------------------");
+        System.out.println("------------------RECEIVE MONEY-------------------");
+        System.out.printf("\nPlease, select your bank account number\n\n");
+        System.out.println("0. Go back");
+    }
+
+    private Menu runReceiveMoney(int accountNumber) {
+        if (!isBankAccountFromUser(accountNumber)) {
+            System.out.println("Bank account is not found");
+            menuStatus = RECEIVE_MONEY;
+        } else {
+            System.out.printf("\n Please, enter the amount\n");
+
+            if (!SCANNER.hasNextBigDecimal()) {
+                System.out.println("INCORRECT INPUT! Enter a number");
+                SCANNER.nextLine();
+                return menuStatus;
+            }
+
+            BigDecimal amount = SCANNER.nextBigDecimal();
+            BankAccount bankAccount = getBankAccountByAccountNumber(accountNumber);
+
+            OperationService operationService = new OperationService();
+            if (operationService.receiveMoney(bankAccount, amount)) {
+                bankAccount.receiveBalance(amount);
+                System.out.println("Successfully receive money");
+            } else {
+                System.out.println("****** NOT ENOUGH MONEY ******");
+            }
+            menuStatus = MAIN;
+        }
+        return menuStatus;
+    }
+}
+

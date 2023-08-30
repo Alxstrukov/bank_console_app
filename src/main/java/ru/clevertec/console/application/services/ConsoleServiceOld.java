@@ -1,9 +1,6 @@
 package ru.clevertec.console.application.services;
 
-import ru.clevertec.console.application.Main;
-import ru.clevertec.console.application.enums.Menu;
-import ru.clevertec.console.application.menu_run.AuthorisedMenu;
-import ru.clevertec.console.application.menu_run.MainMenu;
+import ru.clevertec.console.application.enums.MenuOld;
 import ru.clevertec.console.application.model.BankAccount;
 import ru.clevertec.console.application.model.Client;
 import ru.clevertec.console.application.model.User;
@@ -15,29 +12,36 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.Scanner;
 
-import static ru.clevertec.console.application.enums.Menu.*;
+import static ru.clevertec.console.application.enums.MenuOld.*;
 
-
-public class ConsoleService {
-    //эти поля потом убрать и методы, оставить только метод startApp()
-    private Scanner SCANNER = new Scanner(System.in);
-    private Menu menuStatus;
+public class ConsoleServiceOld extends Thread {
     private User user = new User();
-    AuthorisedMenu authorisedMenu = new AuthorisedMenu(user, menuStatus);
-    MainMenu mainMenu = new MainMenu(user, menuStatus);
-
+    private Scanner SCANNER = new Scanner(System.in);
+    private MenuOld menuStatus;
 
     //стартануть приложение
     public void startApp() {
         menuStatus = AUTHORIZED;
-        while (menuStatus != Menu.EXIT) {
+        while (menuStatus != MenuOld.EXIT) {
             switch (menuStatus) {
                 case AUTHORIZED: {
-                    runAuthorisedMenu();
+                    enterAuthorisedMenu();
                 }
                 break;
                 case MAIN: {
-                    runMainMenu();
+                    enterMainMenu();
+                }
+                break;
+                case VIEW_BALANCE: {
+                    enterViewBalanceMenu();
+                }
+                break;
+                case ADD_MONEY: {
+                    enterAddMoneyMenu();
+                }
+                break;
+                case RECEIVE_MONEY: {
+                    enterReceiveMoneyMenu();
                 }
                 break;
                 case TRANSFER_MONEY_BY_CLEVER_BANK: {
@@ -55,32 +59,9 @@ public class ConsoleService {
         }
     }
 
-    //=================================NEW METHODS======================================//
-
-    private void runMainMenu(){
-        mainMenu.setUser(user);
-        mainMenu.setMenuStatus(menuStatus);
-        menuStatus = mainMenu.run();
-        if (menuStatus == AUTHORIZED){
-            user = mainMenu.getUser();
-        }
-    }
-
-    private void runAuthorisedMenu(){
-        authorisedMenu.setUser(user);
-        authorisedMenu.setMenuStatus(menuStatus);
-        menuStatus = authorisedMenu.run();
-        user = authorisedMenu.getUser();
-    }
-
-
-
-
-
-    //=====================================================================================//
 
     //показать меню авторизации
-    /*private void showAuthorisedMenu() {
+    private void showAuthorisedMenu() {
         //clearConsole();
         System.out.println("-------------------Clever-Bank--------------------");
         System.out.println("-----------------AUTHORISED MENU--------------------");
@@ -88,10 +69,10 @@ public class ConsoleService {
         System.out.println("2. Become a new client at CleverBank");
         System.out.println("0. Exit the application");
         System.out.println("***    Enter the item number and press Enter    ***");
-    }*/
+    }
 
     //войти в меню авторизации
-    /*private Menu enterAuthorisedMenu() {
+    private MenuOld enterAuthorisedMenu() {
         showAuthorisedMenu();
         if (SCANNER.hasNextInt()) {
             Integer value = SCANNER.nextInt();
@@ -180,10 +161,10 @@ public class ConsoleService {
             menuStatus = AUTHORIZED;
         }
         return menuStatus;
-    }*/
+    }
 
     //показать главное меню
-    /*private void showMainMenu() {
+    private void showMainMenu() {
         System.out.println("-------------------Clever-Bank--------------------");
         System.out.println("--------------------MAIN MENU---------------------");
         System.out.println("1. View bank accounts balance");
@@ -194,10 +175,10 @@ public class ConsoleService {
         System.out.println("6. Account statement");
         System.out.println("0. Exit from account");
         System.out.println("***    Enter the item number and press Enter    ***");
-    }*/
+    }
 
     //войти в главное меню
-    /*private Menu enterMainMenu() {
+    private MenuOld enterMainMenu() {
         showMainMenu();
         if (!SCANNER.hasNextInt()) {
             System.out.println("INCORRECT INPUT! Enter a number");
@@ -240,9 +221,9 @@ public class ConsoleService {
             break;
         }
         return menuStatus;
-    }*/
+    }
 
-    /*private Menu enterViewBalanceMenu() {
+    private MenuOld enterViewBalanceMenu() {
         System.out.println("-------------------Clever-Bank--------------------");
         System.out.println("-----------------VIEW BALANCE MENU----------------");
         System.out.println("           List bank accounts           ");
@@ -264,9 +245,9 @@ public class ConsoleService {
             menuStatus = VIEW_BALANCE;
         }
         return menuStatus;
-    }*/
+    }
 
-    /*private Menu enterAddMoneyMenu() {
+    private MenuOld enterAddMoneyMenu() {
         System.out.println("-------------------Clever-Bank--------------------");
         System.out.println("--------------------ADD MONEY---------------------");
         System.out.printf("Please, select your bank account number");
@@ -312,9 +293,9 @@ public class ConsoleService {
             break;
         }
         return menuStatus;
-    }*/
+    }
 
-    /*private Menu enterReceiveMoneyMenu() {
+    private MenuOld enterReceiveMoneyMenu() {
         System.out.println("-------------------Clever-Bank--------------------");
         System.out.println("------------------RECEIVE MONEY-------------------");
         System.out.printf("\nPlease, select your bank account number\n\n");
@@ -363,9 +344,9 @@ public class ConsoleService {
             break;
         }
         return menuStatus;
-    }*/
+    }
 
-    private Menu enterTransferMoneyByCleverBankMenu() {
+    private MenuOld enterTransferMoneyByCleverBankMenu() {
         System.out.println("-------------------Clever-Bank--------------------");
         System.out.println("-----TRANSFER MONEY TO THE CLEVER-BANK CLIENT-----");
         System.out.printf("\nPlease, select your bank account number\n");
@@ -428,7 +409,7 @@ public class ConsoleService {
         return menuStatus;
     }
 
-    private Menu enterTransferMoneyByOtherBankMenu() {
+    private MenuOld enterTransferMoneyByOtherBankMenu() {
         System.out.println("-------------------Clever-Bank--------------------");
         System.out.println("-----TRANSFER MONEY TO THE OTHER-BANK CLIENT-----");
         System.out.printf("\nPlease, select your bank account number\n");
@@ -608,4 +589,3 @@ public class ConsoleService {
         return bankAccountService.readBankAccount(accountNumber).getBank().getID();
     }
 }
-

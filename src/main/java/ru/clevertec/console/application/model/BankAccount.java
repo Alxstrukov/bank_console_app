@@ -17,6 +17,7 @@ public class BankAccount {
     private Date creationDate;
 
     public String showInfoBalance() {
+        System.out.println("           List bank accounts           ");
         final StringBuilder sb = new StringBuilder("BankAccount{");
         sb.append("accountNumber=").append(accountNumber);
         sb.append(", balance=").append(balance);

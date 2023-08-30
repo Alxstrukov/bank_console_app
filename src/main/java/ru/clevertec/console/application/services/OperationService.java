@@ -11,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class OperationService {
-    final int CLEVER_BANK_ID = 119;
 
     //операция пополнение счета
     public boolean addMoney(BankAccount bankAccount, BigDecimal amount) {
@@ -57,7 +56,7 @@ public class OperationService {
     // операция перевод средств клиенту Clever-Bank
     synchronized public boolean transferMoneyByCleverBank(BankAccount bankAccount, int bankAccountNumber, BigDecimal amount) {
 
-        if (isThereAccountNumber(CLEVER_BANK_ID, bankAccountNumber) && isEnoughMoney(bankAccount, amount)) {
+        if (isThereAccountNumber(SqlQuery.CLEVER_BANK_ID, bankAccountNumber) && isEnoughMoney(bankAccount, amount)) {
             try (PreparedStatement preparedStatement = DBService.createPreparedStatement(SqlQuery.TRANSFER_MONEY)) {
                 preparedStatement.setBigDecimal(1, amount);
                 preparedStatement.setInt(2, bankAccount.getAccountNumber());
@@ -70,7 +69,7 @@ public class OperationService {
             TransactionService transactionService = new TransactionService();
             transactionService.createTransactionTransferMoney(bankAccount.getAccountNumber(),
                     bankAccountNumber,
-                    bankAccount.getBank().getID(), CLEVER_BANK_ID, amount);
+                    bankAccount.getBank().getID(), SqlQuery.CLEVER_BANK_ID, amount);
             Transaction transaction = transactionService.getLatestTransactionByOperation(bankAccount.getAccountNumber(), SqlQuery.SELECT_LATEST_TRANSACTION_TRANSFER);
             CheckTXT checkTxt = new CheckTXT();
             checkTxt.createCheck(transaction);
@@ -81,24 +80,6 @@ public class OperationService {
 
     //перевод средств
     synchronized public boolean transferMoney(BankAccount bankAccount, int bankAccountNumber, int bankId, BigDecimal amount) {
-        /*try (PreparedStatement preparedStatement = DBService.createPreparedStatement(SqlQuery.TRANSFER_MONEY)) {
-            if (isThereAccountNumber(bankId, bankAccountNumber) && isEnoughMoney(bankAccount, amount)) {
-                preparedStatement.setBigDecimal(1, amount);
-                preparedStatement.setInt(2, bankAccount.getAccountNumber());
-                preparedStatement.setBigDecimal(3, amount);
-                preparedStatement.setInt(4, bankAccountNumber);
-                preparedStatement.executeUpdate();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        TransactionService transactionService = new TransactionService();
-        transactionService.createTransactionTransferMoney(bankAccount.getAccountNumber(),
-                bankAccountNumber,
-                bankAccount.getBank().getID(), bankId, amount);
-        Transaction transaction = transactionService.getLatestTransactionByOperation(bankAccount.getAccountNumber(), SqlQuery.SELECT_LATEST_TRANSACTION_TRANSFER);
-        CheckTXT checkTxt = new CheckTXT();
-        checkTxt.createCheck(transaction);*/
         if (isThereAccountNumber(bankId, bankAccountNumber) && isEnoughMoney(bankAccount, amount)) {
             try (PreparedStatement preparedStatement = DBService.createPreparedStatement(SqlQuery.TRANSFER_MONEY)) {
                 preparedStatement.setBigDecimal(1, amount);
