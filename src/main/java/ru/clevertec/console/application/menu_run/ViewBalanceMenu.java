@@ -36,10 +36,18 @@ public class ViewBalanceMenu extends AbstractMenu {
     //получить ввод с консоли
     private void getInput() {
         System.out.println("0. Go back");
-        if (SCANNER.nextInt() == 0) {
-            menuStatus = MAIN;
-        } else {
+        if (!SCANNER.hasNext()){
+            System.out.println("ERROR PROBLEM");
+            return;
+        }
+        if (!SCANNER.hasNextInt()) {
             isValidInput(menuStatus);
+        }else {
+            if (SCANNER.nextInt() == 0) {
+                menuStatus = MAIN;
+            } else {
+                isValidInput(menuStatus);
+            }
         }
     }
 }

@@ -10,6 +10,7 @@ public class MainMenu extends AbstractMenu {
     private AddMoneyMenu addMoneyMenu = new AddMoneyMenu(user, menuStatus);
     private ReceiveMoneyMenu receiveMoneyMenu = new ReceiveMoneyMenu(user, menuStatus);
     private TransferMoneyByCleverBankMenu transferClever = new TransferMoneyByCleverBankMenu(user, menuStatus);
+    private TransferMoneyByOtherBankMenu transferOther = new TransferMoneyByOtherBankMenu(user, menuStatus);
 
     public MainMenu(User user, Menu status) {
         super(user, status);
@@ -26,31 +27,23 @@ public class MainMenu extends AbstractMenu {
                 }
                 break;
                 case 1: {
-                    viewBalanceMenu.setUser(user);
-                    viewBalanceMenu.setMenuStatus(menuStatus);
-                    viewBalanceMenu.run();
+                    runViewBalance();
                 }
                 break;
                 case 2: {
-                    addMoneyMenu.setMenuStatus(menuStatus);
-                    addMoneyMenu.setUser(user);
-                    addMoneyMenu.run();
+                    runAddMoney();
                 }
                 break;
                 case 3: {
-                    receiveMoneyMenu.setMenuStatus(menuStatus);
-                    receiveMoneyMenu.setUser(user);
-                    receiveMoneyMenu.run();
+                    runReceiveMoney();
                 }
                 break;
                 case 4: {
-                    transferClever.setMenuStatus(menuStatus);
-                    transferClever.setUser(user);
-                    transferClever.run();
+                    runTransferMoneyCleverBank();
                 }
                 break;
                 case 5: {
-                    menuStatus = TRANSFER_MONEY_BY_OTHER_BANK;
+                    runTransferMoneyOtherBank();
                 }
                 break;
                 case 6: {
@@ -62,6 +55,8 @@ public class MainMenu extends AbstractMenu {
                 }
                 break;
             }
+        } else {
+            menuStatus = isValidInput(MAIN);
         }
         return menuStatus;
     }
@@ -78,5 +73,40 @@ public class MainMenu extends AbstractMenu {
         System.out.println("6. Account statement");
         System.out.println("0. Exit from account");
         System.out.println("***    Enter the item number and press Enter    ***");
+    }
+
+    //вызов меню показать баланс
+    private void runViewBalance(){
+        viewBalanceMenu.setUser(user);
+        viewBalanceMenu.setMenuStatus(menuStatus);
+        viewBalanceMenu.run();
+    }
+
+    //вызов меню пополнения счета
+    private void runAddMoney(){
+        addMoneyMenu.setMenuStatus(menuStatus);
+        addMoneyMenu.setUser(user);
+        addMoneyMenu.run();
+    }
+
+    //вызов меню списания средств
+    private void runReceiveMoney(){
+        receiveMoneyMenu.setMenuStatus(menuStatus);
+        receiveMoneyMenu.setUser(user);
+        receiveMoneyMenu.run();
+    }
+
+    //вызов меню перевода средств в Clever-Bank
+    private void runTransferMoneyCleverBank(){
+        transferClever.setMenuStatus(menuStatus);
+        transferClever.setUser(user);
+        transferClever.run();
+    }
+
+    //вызов меню перевода средств в другой банк
+    private void runTransferMoneyOtherBank(){
+        transferOther.setMenuStatus(menuStatus);
+        transferOther.setUser(user);
+        transferOther.run();
     }
 }

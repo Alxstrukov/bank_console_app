@@ -20,7 +20,7 @@ public class TransferMoneyByCleverBankMenu extends AbstractMenu {
     public Menu run() {
         showTransferMoneyMenu();
         if (!SCANNER.hasNextInt()) {
-            isValidInput(menuStatus);
+           return isValidInput(menuStatus);
         }
         int accountNumber = SCANNER.nextInt();
 
@@ -37,6 +37,7 @@ public class TransferMoneyByCleverBankMenu extends AbstractMenu {
         return menuStatus;
     }
 
+    //показать меню перевода средств
     private void showTransferMoneyMenu() {
         System.out.println("-------------------Clever-Bank--------------------");
         System.out.println("-----TRANSFER MONEY TO THE CLEVER-BANK CLIENT-----");

@@ -29,14 +29,12 @@ public abstract class AbstractMenu {
 
     public abstract Menu run();
 
-    /////////////
     //вывод ссобщения о неверном вводе и изменние статуса меню
     protected Menu isValidInput(Menu status) {
         System.out.println("INCORRECT INPUT! Enter a number");
         SCANNER.nextLine();
         return status;
     }
-    ////////////
 
     //получить номер банковского счета пользоваателя
     protected BankAccount getBankAccountByAccountNumber(int accountNumber) {
@@ -103,16 +101,6 @@ public abstract class AbstractMenu {
         return false;
     }
 
-    //проверка ввода пользователя (должен вводить только числа)
-    /*protected boolean isValidInput() {
-        if (SCANNER.hasNextInt()) {
-            return true;
-        } else {
-            System.out.println("Invalid input, try again...");
-            return false;
-        }
-    }*/
-
     //проверка имени на валидность введенного имени
     protected boolean isValidName(String name) {
         return name.matches("[a-zA-Z]+");
@@ -144,8 +132,5 @@ public abstract class AbstractMenu {
         return null;
     }
 
-    protected int getRecipientBankIdByAccountNumber(int accountNumber) {
-        BankAccountService bankAccountService = new BankAccountService();
-        return bankAccountService.readBankAccount(accountNumber).getBank().getID();
-    }
+
 }
