@@ -5,6 +5,7 @@ public class SQLquery {
     public static final String RECEIVE_MONEY_ENUM_DB = "RECEIVE MONEY";
     public static final String TRANSFER_MONEY_ENUM_DB = "TRANSFER MONEY";
     public static final int CLEVER_BANK_ID = 119;
+    public static final String CLEVER_BANK_NAME = "Clever-Bank";
     public static final String SELECT_BANK_ACCOUNTS = "SELECT clients.id as client_id,\n" +
             "       clients.last_name,\n" +
             "       clients.first_name,\n" +
