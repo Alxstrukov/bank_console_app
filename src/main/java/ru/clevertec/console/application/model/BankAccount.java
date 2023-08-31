@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 
 
@@ -17,21 +18,20 @@ public class BankAccount {
     private Date creationDate;
 
     public String showInfoBalance() {
-        System.out.println("           List bank accounts           ");
-        final StringBuilder sb = new StringBuilder("BankAccount{");
-        sb.append("accountNumber=").append(accountNumber);
-        sb.append(", balance=").append(balance);
-        sb.append(" BYN");
-        sb.append(", creationDate=").append(creationDate);
-        sb.append('}');
+        final StringBuilder sb = new StringBuilder("Bank account number:  ");
+        sb.append(accountNumber);
+        sb.append("   ");
+        sb.append("     Balance=").append(balance.setScale(2, RoundingMode.HALF_EVEN));
+        sb.append(" BYN\n");
+        sb.append("======================================================\n");
         return sb.toString();
     }
 
-    public void addBalance(BigDecimal amount) {
+    public void plusBalance(BigDecimal amount) {
         balance = balance.add(amount);
     }
 
-    public void receiveBalance(BigDecimal amount) {
+    public void minusBalance(BigDecimal amount) {
         balance = balance.subtract(amount);
     }
 }

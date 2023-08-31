@@ -72,7 +72,6 @@ public class MainMenu extends AbstractMenu {
         System.out.println("5. Transfer money to a client of another bank");
         System.out.println("6. Account statement");
         System.out.println("0. Exit from account");
-        System.out.println("***    Enter the item number and press Enter    ***");
     }
 
     //вызов меню показать баланс

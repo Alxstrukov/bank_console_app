@@ -10,7 +10,7 @@ public class DBService {
     public final static String DB_PASS = "postgres";
     public final static String DB_ENCODING = "?useUnicode=yes&characterEncoding=UTF-8";
     public final static String DB_URL = "jdbc:postgresql://" + DB_HOST + ":" + DB_PORT + "/" + DB_NAME + DB_ENCODING;
-    private static Connection connection;
+    private static Connection connection = null;
     private static ResultSet resultSet;
     private static Statement statement;
     private static PreparedStatement preparedStatement;

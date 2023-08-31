@@ -2,7 +2,7 @@ package ru.clevertec.console.application.services;
 
 import ru.clevertec.console.application.exception.TransactionNumberNullException;
 import ru.clevertec.console.application.model.Transaction;
-import ru.clevertec.console.application.utils.SqlQuery;
+import ru.clevertec.console.application.utils.SQLquery;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -16,7 +16,7 @@ public class TransactionService {
     //создать транзакцию пополнения средств в БД
     synchronized public void createTransactionAddMoney(int accountRecipientNumber,
                                                        BigDecimal amount, int bankRecipientId) {
-        try (PreparedStatement preparedStatement = DBService.createPreparedStatement(SqlQuery.INSERT_TRANSACTION_ADD_MONEY)) {
+        try (PreparedStatement preparedStatement = DBService.createPreparedStatement(SQLquery.INSERT_TRANSACTION_ADD_MONEY)) {
             preparedStatement.setInt(1, accountRecipientNumber);
             preparedStatement.setBigDecimal(2, amount);
             preparedStatement.setInt(3, bankRecipientId);
@@ -29,7 +29,7 @@ public class TransactionService {
     //создать транзакцию списания средств в БД
     synchronized public void createTransactionReceiveMoney(int accountSenderNumber,
                                                            BigDecimal amount, int bankSenderId) {
-        try (PreparedStatement preparedStatement = DBService.createPreparedStatement(SqlQuery.INSERT_TRANSACTION_RECEIVE_MONEY)) {
+        try (PreparedStatement preparedStatement = DBService.createPreparedStatement(SQLquery.INSERT_TRANSACTION_RECEIVE_MONEY)) {
             preparedStatement.setInt(1, accountSenderNumber);
             preparedStatement.setBigDecimal(2, amount);
             preparedStatement.setInt(3, bankSenderId);
@@ -42,7 +42,7 @@ public class TransactionService {
     //создать транзакцию перевода средств в БД
     synchronized public void createTransactionTransferMoney
     (int accountSenderNumber, int accountRecipientNumber, int bankSenderId, int bankRecipientId, BigDecimal amount) {
-        try (PreparedStatement preparedStatement = DBService.createPreparedStatement(SqlQuery.INSERT_TRANSACTION_TRANSFER_MONEY)) {
+        try (PreparedStatement preparedStatement = DBService.createPreparedStatement(SQLquery.INSERT_TRANSACTION_TRANSFER_MONEY)) {
             preparedStatement.setInt(1, accountSenderNumber);
             preparedStatement.setInt(2, accountRecipientNumber);
             preparedStatement.setInt(3, bankSenderId);

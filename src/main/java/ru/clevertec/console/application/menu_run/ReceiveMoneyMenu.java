@@ -38,8 +38,10 @@ public class ReceiveMoneyMenu extends AbstractMenu {
     private void showReceiveMoney() {
         System.out.println("-------------------Clever-Bank--------------------");
         System.out.println("------------------RECEIVE MONEY-------------------");
-        System.out.printf("\nPlease, select your bank account number\n\n");
-        System.out.println("0. Go back");
+        System.out.println("           List bank accounts           ");
+        showListBankAccountsInfo();
+        System.out.printf("Please select your bank account number or enter '0' to return to the main menu\n");
+        System.out.printf("For example: 1045\n");
     }
 
     private Menu runReceiveMoney(int accountNumber) {
@@ -48,6 +50,7 @@ public class ReceiveMoneyMenu extends AbstractMenu {
             menuStatus = RECEIVE_MONEY;
         } else {
             System.out.printf("\n Please, enter the amount\n");
+            System.out.printf("For example: 3,44\n");
 
             if (!SCANNER.hasNextBigDecimal()) {
                 System.out.println("INCORRECT INPUT! Enter a number");
@@ -60,10 +63,11 @@ public class ReceiveMoneyMenu extends AbstractMenu {
 
             OperationService operationService = new OperationService();
             if (operationService.receiveMoney(bankAccount, amount)) {
-                bankAccount.receiveBalance(amount);
-                System.out.println("Successfully receive money");
+                bankAccount.minusBalance(amount);
+                System.out.println("*********** Successfully receive money ***********\n");
             } else {
-                System.out.println("****** NOT ENOUGH MONEY ******");
+                clearConsole();
+                System.out.println("**************** NOT ENOUGH MONEY ****************\n");
             }
             menuStatus = MAIN;
         }

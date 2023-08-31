@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 import ru.clevertec.console.application.model.Bank;
 import ru.clevertec.console.application.model.BankAccount;
 import ru.clevertec.console.application.model.Client;
-import ru.clevertec.console.application.utils.SqlQuery;
+import ru.clevertec.console.application.utils.SQLquery;
 
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
@@ -17,7 +17,7 @@ public class BankAccountService {
 
     //создание нового банк.счета (ID банка указываем в параметрах)
     public void createBankAccount(int bankId, int clientId) {
-        try (PreparedStatement preparedStatement = DBService.createPreparedStatement(SqlQuery.INSERT_BANK_ACCOUNT)) {
+        try (PreparedStatement preparedStatement = DBService.createPreparedStatement(SQLquery.INSERT_BANK_ACCOUNT)) {
             preparedStatement.setInt(1, bankId);
             preparedStatement.setInt(2, clientId);
             preparedStatement.executeUpdate();
@@ -28,7 +28,7 @@ public class BankAccountService {
 
     //создание нового банк.счета (ID банка указываем в параметрах) + баланс
     public void createBankAccount(int bankId, int clientId, BigDecimal balance) {
-        try (PreparedStatement preparedStatement = DBService.createPreparedStatement(SqlQuery.INSERT_BANK_ACCOUNT_AND_BALANCE)) {
+        try (PreparedStatement preparedStatement = DBService.createPreparedStatement(SQLquery.INSERT_BANK_ACCOUNT_AND_BALANCE)) {
             preparedStatement.setInt(1, bankId);
             preparedStatement.setInt(2, clientId);
             preparedStatement.setBigDecimal(3, balance);
@@ -40,7 +40,7 @@ public class BankAccountService {
 
     //считать банковский счет с БД и создать объект
     public BankAccount readBankAccount(int bankAccountNumber) {
-        try (ResultSet resultSet = DBService.getQueryResult(SqlQuery.SELECT_BANK_ACCOUNTS + bankAccountNumber)) {
+        try (ResultSet resultSet = DBService.getQueryResult(SQLquery.SELECT_BANK_ACCOUNTS + bankAccountNumber)) {
             resultSet.next();
             int bankId = resultSet.getInt("bank_id");
             String bankName = resultSet.getString("name_bank");
@@ -61,7 +61,7 @@ public class BankAccountService {
 
     //удалитьт банковский счет с БД
     public void deleteBankAccount(int bankAccountNumber) {
-        try (PreparedStatement preparedStatement = DBService.createPreparedStatement(SqlQuery.DELETE_BANK_ACCOUNT)) {
+        try (PreparedStatement preparedStatement = DBService.createPreparedStatement(SQLquery.DELETE_BANK_ACCOUNT)) {
             preparedStatement.setInt(1, bankAccountNumber);
             preparedStatement.executeUpdate();
         } catch (Exception e) {

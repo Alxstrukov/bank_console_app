@@ -21,33 +21,24 @@ public class ViewBalanceMenu extends AbstractMenu {
 
     //показать название меню
     private void showViewMenu() {
-        System.out.println("-------------------Clever-Bank--------------------");
-        System.out.println("-----------------VIEW BALANCE MENU----------------");
-    }
-
-    //покзать инфу о банковских счетах
-    private void showListBankAccountsInfo() {
-        user.getBankAccounts().stream().forEach(it -> {
-            System.out.println(it.showInfoBalance());
-        });
-        System.out.println();
+        System.out.println("---------------------Clever-Bank----------------------");
+        System.out.println("------------------VIEW BALANCE MENU-------------------");
+        System.out.println("                  List bank accounts           \n");
     }
 
     //получить ввод с консоли
-    private void getInput() {
-        System.out.println("0. Go back");
-        if (!SCANNER.hasNext()){
-            System.out.println("ERROR PROBLEM");
-            return;
-        }
+    private boolean getInput() {
+        System.out.printf("Please, enter any value to return to the main menu\n");
         if (!SCANNER.hasNextInt()) {
             isValidInput(menuStatus);
-        }else {
+        } else {
             if (SCANNER.nextInt() == 0) {
                 menuStatus = MAIN;
             } else {
                 isValidInput(menuStatus);
+                return false;
             }
         }
+        return true;
     }
 }

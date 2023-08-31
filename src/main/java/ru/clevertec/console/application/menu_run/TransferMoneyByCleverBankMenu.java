@@ -4,7 +4,7 @@ import ru.clevertec.console.application.enums.Menu;
 import ru.clevertec.console.application.model.BankAccount;
 import ru.clevertec.console.application.model.User;
 import ru.clevertec.console.application.services.OperationService;
-import ru.clevertec.console.application.utils.SqlQuery;
+import ru.clevertec.console.application.utils.SQLquery;
 
 import java.math.BigDecimal;
 
@@ -41,8 +41,10 @@ public class TransferMoneyByCleverBankMenu extends AbstractMenu {
     private void showTransferMoneyMenu() {
         System.out.println("-------------------Clever-Bank--------------------");
         System.out.println("-----TRANSFER MONEY TO THE CLEVER-BANK CLIENT-----");
-        System.out.printf("\nPlease, select your bank account number\n");
-        System.out.println("0. Go back");
+        System.out.println("           List bank accounts           ");
+        showListBankAccountsInfo();
+        System.out.printf("Please select your bank account number or enter '0' to return to the main menu\n");
+        System.out.printf("For example: 1045\n");
     }
 
     private Menu runTransferMoney(int accountNumber) {
@@ -73,6 +75,7 @@ public class TransferMoneyByCleverBankMenu extends AbstractMenu {
     //получить данные от пользрвателя (номер счета получателя)
     private Integer getInputRecipientAccountNumber() {
         System.out.printf("\nPlease, enter the Clever-Bank client bank account number\n");
+        System.out.printf("For example: 1046\n");
         if (!SCANNER.hasNextInt()) {
             System.out.println("INCORRECT INPUT! Enter a number");
             SCANNER.nextLine();
@@ -86,6 +89,7 @@ public class TransferMoneyByCleverBankMenu extends AbstractMenu {
     //получить данные от пользователя (сумму)
     private BigDecimal getInputAmount() {
         System.out.println("Please, enter the amount");
+        System.out.printf("For example: 107,50\n");
         if (!SCANNER.hasNextBigDecimal()) {
             System.out.println("INCORRECT INPUT! Enter a number");
             SCANNER.nextLine();
@@ -99,11 +103,12 @@ public class TransferMoneyByCleverBankMenu extends AbstractMenu {
     private Menu performTransfer(int accountNumber, int recipientAccountNumber, BigDecimal amount) {
         BankAccount bankAccount = getBankAccountByAccountNumber(accountNumber);
         OperationService operationService = new OperationService();
-        if (operationService.transferMoney(bankAccount, recipientAccountNumber, SqlQuery.CLEVER_BANK_ID, amount)) {
-            bankAccount.receiveBalance(amount);
-            System.out.println("Money was successfully transferred to the Clever-Bank client");
+        if (operationService.transferMoney(bankAccount, recipientAccountNumber, SQLquery.CLEVER_BANK_ID, amount)) {
+            bankAccount.minusBalance(amount);
+            System.out.println("********** Successfully transfer money ***********\n");
         } else {
-            System.out.println("****** NOT ENOUGH MONEY ******");
+            clearConsole();
+            System.out.println("**************** NOT ENOUGH MONEY ****************\n");
         }
         menuStatus = MAIN;
         return menuStatus;

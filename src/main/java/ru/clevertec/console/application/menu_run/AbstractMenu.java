@@ -5,9 +5,8 @@ import lombok.NoArgsConstructor;
 import ru.clevertec.console.application.enums.Menu;
 import ru.clevertec.console.application.model.BankAccount;
 import ru.clevertec.console.application.model.User;
-import ru.clevertec.console.application.services.BankAccountService;
 import ru.clevertec.console.application.services.DBService;
-import ru.clevertec.console.application.utils.SqlQuery;
+import ru.clevertec.console.application.utils.SQLquery;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
@@ -29,8 +28,10 @@ public abstract class AbstractMenu {
 
     public abstract Menu run();
 
+
     //вывод ссобщения о неверном вводе и изменние статуса меню
     protected Menu isValidInput(Menu status) {
+        clearConsole();
         System.out.println("INCORRECT INPUT! Enter a number");
         SCANNER.nextLine();
         return status;
@@ -47,7 +48,7 @@ public abstract class AbstractMenu {
 
     //получить все счета пользователя
     protected void readAllUserBankAccounts(int userId) {
-        try (ResultSet resultSet = DBService.getQueryResult(SqlQuery.SELECT_USER_ALL_BANK_ACCOUNTS + userId)) {
+        try (ResultSet resultSet = DBService.getQueryResult(SQLquery.SELECT_USER_ALL_BANK_ACCOUNTS + userId)) {
             while (resultSet.next()) {
                 int accountNumber = resultSet.getInt("account_number");
                 BigDecimal balance = resultSet.getBigDecimal("balance");
@@ -67,17 +68,17 @@ public abstract class AbstractMenu {
 
     //проверка, есть ли клиент с таким id в банке
     protected boolean isClientOfBank(int id) {
-        return isEmptyInDataBaseById(id, SqlQuery.IS_CLIENT_OF_BANK);
+        return isEmptyInDataBaseById(id, SQLquery.IS_CLIENT_OF_BANK);
     }
 
     //проверка, существует ли такой номер счёта в базе данных
     protected boolean isBankAccountOfBank(int accountNumber) {
-        return isEmptyInDataBaseById(accountNumber, SqlQuery.IS_BANK_ACCOUNT_OF_OTHER_BANK);
+        return isEmptyInDataBaseById(accountNumber, SQLquery.IS_BANK_ACCOUNT_OF_OTHER_BANK);
     }
 
     //проверка, принадлежит ли такой номер счёта банку Clever-Bank
     protected boolean isBankAccountOfCleverBank(int accountNumber) {
-        return isEmptyInDataBaseById(accountNumber, SqlQuery.IS_BANK_ACCOUNT_OF_CLEVER_BANK);
+        return isEmptyInDataBaseById(accountNumber, SQLquery.IS_BANK_ACCOUNT_OF_CLEVER_BANK);
     }
 
     //принадлежит ли номер счета пользователю
@@ -110,7 +111,7 @@ public abstract class AbstractMenu {
     protected Integer getNewClientId(String lastName, String firstName) {
         try (ResultSet resultSet = DBService
                 .getQueryResult(String
-                        .format(SqlQuery.SELECT_NEW_CLIENT_ID, lastName, firstName))) {
+                        .format(SQLquery.SELECT_NEW_CLIENT_ID, lastName, firstName))) {
             resultSet.next();
             return resultSet.getInt("id");
         } catch (Exception e) {
@@ -123,13 +124,21 @@ public abstract class AbstractMenu {
     protected Integer getNewBankAccountId(int clientId) {
         try (ResultSet resultSet = DBService
                 .getQueryResult(String
-                        .format(SqlQuery.SELECT_NEW_BANK_ACCOUNT_ID, clientId))) {
+                        .format(SQLquery.SELECT_NEW_BANK_ACCOUNT_ID, clientId))) {
             resultSet.next();
             return resultSet.getInt("account_number");
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    //показать инфу о банковских счетах
+    protected void showListBankAccountsInfo() {
+        user.getBankAccounts().stream().forEach(it -> {
+            System.out.println(it.showInfoBalance());
+        });
+        System.out.println();
     }
 
 

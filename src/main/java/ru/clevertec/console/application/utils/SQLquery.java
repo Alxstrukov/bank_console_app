@@ -1,9 +1,9 @@
 package ru.clevertec.console.application.utils;
 
-public class SqlQuery {
-    public static final String ADD_MONEY_ENUM_DB = "'ADD MONEY'";
-    public static final String RECEIVE_MONEY_ENUM_DB = "'RECEIVE MONEY'";
-    public static final String TRANSFER_MONEY_ENUM_DB = "'TRANSFER MONEY'";
+public class SQLquery {
+    public static final String ADD_MONEY_ENUM_DB = "ADD MONEY";
+    public static final String RECEIVE_MONEY_ENUM_DB = "RECEIVE MONEY";
+    public static final String TRANSFER_MONEY_ENUM_DB = "TRANSFER MONEY";
     public static final int CLEVER_BANK_ID = 119;
     public static final String SELECT_BANK_ACCOUNTS = "SELECT clients.id as client_id,\n" +
             "       clients.last_name,\n" +

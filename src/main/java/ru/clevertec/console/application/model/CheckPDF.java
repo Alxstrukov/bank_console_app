@@ -7,4 +7,9 @@ public class CheckPDF implements CheckCreatable {
     @Override
     public void createCheck(Transaction transaction) {
     }
+
+    @Override
+    public void showCheckConsole(Transaction transaction) {
+
+    }
 }

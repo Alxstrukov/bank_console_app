@@ -40,8 +40,10 @@ public class TransferMoneyByOtherBankMenu extends AbstractMenu{
     private void showTransferMoneyMenu() {
         System.out.println("-------------------Clever-Bank--------------------");
         System.out.println("-----TRANSFER MONEY TO THE OTHER BANK CLIENT-----");
-        System.out.printf("\nPlease, select your bank account number\n");
-        System.out.println("0. Go back");
+        System.out.println("           List bank accounts           ");
+        showListBankAccountsInfo();
+        System.out.printf("Please select your bank account number or enter '0' to return to the main menu\n");
+        System.out.printf("For example: 1045\n");
     }
 
     private Menu runTransferMoney(int accountNumber) {
@@ -72,6 +74,7 @@ public class TransferMoneyByOtherBankMenu extends AbstractMenu{
     //получить данные от пользрвателя (номер счета получателя)
     private Integer getInputRecipientAccountNumber() {
         System.out.printf("\nPlease, enter the other  bank client bank account number\n");
+        System.out.printf("For example: 1017\n");
         if (!SCANNER.hasNextInt()) {
             System.out.println("INCORRECT INPUT! Enter a number");
             SCANNER.nextLine();
@@ -85,6 +88,7 @@ public class TransferMoneyByOtherBankMenu extends AbstractMenu{
     //получить данные от пользователя (сумму)
     private BigDecimal getInputAmount() {
         System.out.println("Please, enter the amount");
+        System.out.printf("For example: 100,45\n");
         if (!SCANNER.hasNextBigDecimal()) {
             System.out.println("INCORRECT INPUT! Enter a number");
             SCANNER.nextLine();
@@ -106,10 +110,11 @@ public class TransferMoneyByOtherBankMenu extends AbstractMenu{
         int recipientBankId = getRecipientBankIdByAccountNumber(recipientAccountNumber);
         OperationService operationService = new OperationService();
         if (operationService.transferMoney(bankAccount, recipientAccountNumber, recipientBankId, amount)) {
-            bankAccount.receiveBalance(amount);
-            System.out.println("Money was successfully transferred to the client other bank ");
+            bankAccount.minusBalance(amount);
+            System.out.println("********** Successfully transfer money ***********\n");
         } else {
-            System.out.println("****** NOT ENOUGH MONEY ******");
+            clearConsole();
+            System.out.println("**************** NOT ENOUGH MONEY ****************\n");
         }
         menuStatus = MAIN;
         return menuStatus;
