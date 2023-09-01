@@ -12,6 +12,24 @@ import java.sql.SQLException;
 
 public class OperationService {
 
+    //начисление процента
+    public boolean addBalanceByPercentage(int accountNumber, BigDecimal amount) {
+        boolean status = false;
+        if (!status) {
+            try (PreparedStatement ps = DBService.createPreparedStatement(SQLquery.ADD_MONEY);) {
+                ps.setBigDecimal(1, amount);
+                ps.setInt(2, accountNumber);
+                ps.executeUpdate();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            TransactionService transactionService = new TransactionService();
+            transactionService.createTransactionAddMoney(accountNumber, amount, SQLquery.CLEVER_BANK_ID);
+            status = true;
+        }
+        return status;
+    }
+
     //операция пополнение счета
     public boolean addMoney(BankAccount bankAccount, BigDecimal amount) {
         boolean status = false;
