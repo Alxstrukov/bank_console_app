@@ -9,6 +9,7 @@ import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 
 public class CheckTXT implements CheckCreatable {
+    String CHECK_PATH = "src/main/java/ru/clevertec/console/application/checks/check_";
 
     //записать чек в txt файл
     synchronized public void createCheck(Transaction transaction) {
@@ -83,11 +84,11 @@ public class CheckTXT implements CheckCreatable {
             }
             break;
             case SQLquery.RECEIVE_MONEY_ENUM_DB: {
-                translateName = "Списание  ";
+                translateName = "  Списание";
             }
             break;
             case SQLquery.TRANSFER_MONEY_ENUM_DB: {
-                translateName = "Перевод   ";
+                translateName = "   Перевод";
             }
             break;
             default: {

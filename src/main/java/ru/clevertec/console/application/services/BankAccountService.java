@@ -13,25 +13,13 @@ import java.sql.ResultSet;
 import java.util.Date;
 
 @NoArgsConstructor
-public class BankAccountService {
+public class BankAccountService implements BankAccountManagable {
 
     //создание нового банк.счета (ID банка указываем в параметрах)
     public void createBankAccount(int bankId, int clientId) {
         try (PreparedStatement preparedStatement = DBService.createPreparedStatement(SQLquery.INSERT_BANK_ACCOUNT)) {
             preparedStatement.setInt(1, bankId);
             preparedStatement.setInt(2, clientId);
-            preparedStatement.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    //создание нового банк.счета (ID банка указываем в параметрах) + баланс
-    public void createBankAccount(int bankId, int clientId, BigDecimal balance) {
-        try (PreparedStatement preparedStatement = DBService.createPreparedStatement(SQLquery.INSERT_BANK_ACCOUNT_AND_BALANCE)) {
-            preparedStatement.setInt(1, bankId);
-            preparedStatement.setInt(2, clientId);
-            preparedStatement.setBigDecimal(3, balance);
             preparedStatement.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();

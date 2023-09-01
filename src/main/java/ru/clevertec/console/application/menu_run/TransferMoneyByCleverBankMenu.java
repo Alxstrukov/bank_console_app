@@ -20,7 +20,7 @@ public class TransferMoneyByCleverBankMenu extends AbstractMenu {
     public Menu run() {
         showTransferMoneyMenu();
         if (!SCANNER.hasNextInt()) {
-           return isValidInput(menuStatus);
+            return isValidInput(menuStatus);
         }
         int accountNumber = SCANNER.nextInt();
 
@@ -53,7 +53,8 @@ public class TransferMoneyByCleverBankMenu extends AbstractMenu {
             menuStatus = TRANSFER_MONEY_BY_CLEVER_BANK;
         } else {
             Integer recipientAccountNumber = getInputRecipientAccountNumber();
-            if (recipientAccountNumber == null) {
+            if (recipientAccountNumber == accountNumber) {
+                System.out.println("Error. The sender and the recipient have the same bank account");
                 return menuStatus;
             }
 
@@ -62,7 +63,7 @@ public class TransferMoneyByCleverBankMenu extends AbstractMenu {
                 if (amount == null) {
                     return menuStatus;
                 }
-                performTransfer(accountNumber,recipientAccountNumber,amount);
+                performTransfer(accountNumber, recipientAccountNumber, amount);
             } else {
                 System.out.println("*** THE BANK ACCOUNT NUMBER DOES NOT BELONG TO CLEVER-BANK ***");
                 SCANNER.nextLine();
@@ -70,6 +71,11 @@ public class TransferMoneyByCleverBankMenu extends AbstractMenu {
             }
         }
         return menuStatus;
+    }
+
+    //проверка не совпадают ли счета получателя и отправителя (чтобы самому себе не отправил)
+    private boolean isCompareBankAccountNumber(int senderNumber, int recipientNumber) {
+        return (senderNumber == recipientNumber);
     }
 
     //получить данные от пользрвателя (номер счета получателя)
@@ -105,6 +111,8 @@ public class TransferMoneyByCleverBankMenu extends AbstractMenu {
         OperationService operationService = new OperationService();
         if (operationService.transferMoney(bankAccount, recipientAccountNumber, SQLquery.CLEVER_BANK_ID, amount)) {
             bankAccount.minusBalance(amount);
+            user.getBankAccounts().clear();
+            readAllUserBankAccounts(user.getClient().getID());
             System.out.println("********** Successfully transfer money ***********\n");
         } else {
             clearConsole();
@@ -113,4 +121,5 @@ public class TransferMoneyByCleverBankMenu extends AbstractMenu {
         menuStatus = MAIN;
         return menuStatus;
     }
+
 }

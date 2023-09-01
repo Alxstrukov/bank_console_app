@@ -7,7 +7,8 @@ import java.sql.Time;
 import java.util.Date;
 
 public interface CheckCreatable {
-   String CHECK_PATH = "src/main/java/ru/clevertec/console/application/checks/check_";
-   void createCheck(Transaction transaction);
-   void showCheckConsole(Transaction transaction);
+    void createCheck(Transaction transaction);
+
+    default void showCheckConsole(Transaction transaction) {
+    }
 }

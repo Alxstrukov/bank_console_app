@@ -3,6 +3,7 @@ package ru.clevertec.console.application.menu_run;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.clevertec.console.application.enums.Menu;
+import ru.clevertec.console.application.model.Bank;
 import ru.clevertec.console.application.model.BankAccount;
 import ru.clevertec.console.application.model.User;
 import ru.clevertec.console.application.services.DBService;
@@ -16,17 +17,17 @@ import java.util.Scanner;
 
 @NoArgsConstructor
 @Data
-public abstract class AbstractMenu {
+public abstract class AbstractMenu implements RunnableMenu{
     protected User user;
     protected Menu menuStatus;
     protected Scanner SCANNER = new Scanner(System.in);
 
-    public AbstractMenu(User user, Menu status) {
+    protected AbstractMenu(User user, Menu status) {
         this.user = user;
         menuStatus = status;
     }
 
-    public abstract Menu run();
+    //public abstract Menu run();
 
 
     //вывод ссобщения о неверном вводе и изменние статуса меню
@@ -53,7 +54,10 @@ public abstract class AbstractMenu {
                 int accountNumber = resultSet.getInt("account_number");
                 BigDecimal balance = resultSet.getBigDecimal("balance");
                 Date date = resultSet.getDate("date");
-                BankAccount bankAccount = new BankAccount(accountNumber, balance, user.getBank(), user.getClient(), date);
+                int bankId = resultSet.getInt("bank_id");
+                String bankName = resultSet.getString("name_bank");
+                Bank bank = new Bank(bankId, bankName);
+                BankAccount bankAccount = new BankAccount(accountNumber, balance, bank, user.getClient(), date);
                 user.getBankAccounts().add(bankAccount);
             }
         } catch (Exception exception) {

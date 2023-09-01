@@ -107,8 +107,9 @@ public class SQLquery {
             "WHERE last_name = '%s' AND first_name = '%s' ORDER BY clients.id DESC LIMIT 1;";
     public static final String SELECT_NEW_BANK_ACCOUNT_ID = "SELECT account_number FROM bank_accounts " +
             "WHERE client_id = %s ORDER BY bank_accounts.account_number DESC LIMIT 1;";
-    public static final String SELECT_USER_ALL_BANK_ACCOUNTS = "SELECT * " +
-            "FROM bank_accounts WHERE bank_id = " + CLEVER_BANK_ID + " AND client_id = ";
+    public static final String SELECT_USER_ALL_BANK_ACCOUNTS = "SELECT * FROM bank_accounts\n" +
+            "LEFT JOIN banks  on bank_accounts.bank_id = banks.id\n" +
+            "WHERE client_id = ";
 
     public static final String LOAD_AND_INIT_DB = "DROP TABLE if exists clients cascade ;\n" +
             "CREATE TABLE clients\n" +
@@ -197,10 +198,10 @@ public class SQLquery {
             "       ('Belarus-Bank');\n" +
             "INSERT INTO bank_accounts (balance, bank_id, client_id, date)\n" +
             "VALUES (7100, 100, 1, '2021-12-11'),\n" +
-            "       (2500, 101, 2, '2016-10-12'),\n" +
-            "       (150, 102, 3, '2021-05-12'),\n" +
-            "       (1458, 103, 4, '2022-11-13'),\n" +
-            "       (123.25, 104, 5, '2023-06-14'),\n" +
+            "       (2500, 101, 1, '2016-10-12'),\n" +
+            "       (150, 102, 1, '2021-05-12'),\n" +
+            "       (1458, 103, 1, '2022-11-13'),\n" +
+            "       (123.25, 104, 1, '2023-06-14'),\n" +
             "       (710.25, 100, 6, '2023-07-15'),\n" +
             "       (1200.55, 101, 7, '2021-03-16'),\n" +
             "       (1580, 102, 8, '2023-02-17'),\n" +

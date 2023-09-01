@@ -7,7 +7,7 @@ import ru.clevertec.console.application.utils.SQLquery;
 import java.sql.*;
 
 @NoArgsConstructor
-public class BankService {
+public class BankService implements BankManagable{
 
     //метод создающий Bank в БД
     public void createBank(String bankName) {

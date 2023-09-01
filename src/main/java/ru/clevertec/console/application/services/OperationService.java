@@ -53,31 +53,6 @@ public class OperationService {
         return false;
     }
 
-    // операция перевод средств клиенту Clever-Bank
-    synchronized public boolean transferMoneyByCleverBank(BankAccount bankAccount, int bankAccountNumber, BigDecimal amount) {
-
-        if (isThereAccountNumber(SQLquery.CLEVER_BANK_ID, bankAccountNumber) && isEnoughMoney(bankAccount, amount)) {
-            try (PreparedStatement preparedStatement = DBService.createPreparedStatement(SQLquery.TRANSFER_MONEY)) {
-                preparedStatement.setBigDecimal(1, amount);
-                preparedStatement.setInt(2, bankAccount.getAccountNumber());
-                preparedStatement.setBigDecimal(3, amount);
-                preparedStatement.setInt(4, bankAccountNumber);
-                preparedStatement.executeUpdate();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            TransactionService transactionService = new TransactionService();
-            transactionService.createTransactionTransferMoney(bankAccount.getAccountNumber(),
-                    bankAccountNumber,
-                    bankAccount.getBank().getID(), SQLquery.CLEVER_BANK_ID, amount);
-            Transaction transaction = transactionService.getLatestTransactionByOperation(bankAccount.getAccountNumber(), SQLquery.SELECT_LATEST_TRANSACTION_TRANSFER);
-            CheckTXT checkTxt = new CheckTXT();
-            checkTxt.createCheck(transaction);
-            return true;
-        }
-        return false;
-    }
-
     //перевод средств
     synchronized public boolean transferMoney(BankAccount bankAccount, int bankAccountNumber, int bankId, BigDecimal amount) {
         if (isThereAccountNumber(bankId, bankAccountNumber) && isEnoughMoney(bankAccount, amount)) {
@@ -101,7 +76,6 @@ public class OperationService {
         }
         return false;
     }
-
 
     //достаточно ли денег на счету для списания
     private boolean isEnoughMoney(BankAccount bankAccount, BigDecimal amount) {

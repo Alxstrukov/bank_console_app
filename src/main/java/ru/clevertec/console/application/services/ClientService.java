@@ -6,7 +6,7 @@ import ru.clevertec.console.application.utils.SQLquery;
 
 import java.sql.*;
 
-public class ClientService {
+public class ClientService implements ClientManagable{
 
     public void createClient(String lastName, String firstName) {
         try (PreparedStatement ps = DBService.createPreparedStatement(SQLquery.INSERT_CLIENT);) {
@@ -35,7 +35,7 @@ public class ClientService {
     }
 
     public void updateClient(int clientId, String newLastName, String newFirstName) {
-        try (PreparedStatement ps = DBService.createPreparedStatement(SQLquery.UPDATE_CLIENT_BY_ID);) {
+        try (PreparedStatement ps = DBService.createPreparedStatement(SQLquery.UPDATE_CLIENT_BY_ID)) {
             ps.setString(1, newLastName);
             ps.setString(2, newFirstName);
             ps.setInt(3, clientId);

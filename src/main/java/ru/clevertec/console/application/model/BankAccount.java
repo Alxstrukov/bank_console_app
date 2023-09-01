@@ -18,13 +18,12 @@ public class BankAccount {
     private Date creationDate;
 
     public String showInfoBalance() {
-        final StringBuilder sb = new StringBuilder("Bank account number:  ");
-        sb.append(accountNumber);
-        sb.append("   ");
-        sb.append("     Balance=").append(balance.setScale(2, RoundingMode.HALF_EVEN));
-        sb.append(" BYN\n");
-        sb.append("======================================================\n");
-        return sb.toString();
+        String infoLine = String.format("Bank: %12.12s  Number:%d  Balance = %6.10s BYN",
+                bank.getBankName(),
+                accountNumber,
+                balance.setScale(2, RoundingMode.HALF_EVEN))
+                + "\n======================================================\n";
+        return infoLine;
     }
 
     public void plusBalance(BigDecimal amount) {

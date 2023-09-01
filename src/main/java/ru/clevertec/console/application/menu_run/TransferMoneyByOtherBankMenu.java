@@ -52,7 +52,8 @@ public class TransferMoneyByOtherBankMenu extends AbstractMenu{
             menuStatus = TRANSFER_MONEY_BY_OTHER_BANK;
         } else {
             Integer recipientAccountNumber = getInputRecipientAccountNumber();
-            if (recipientAccountNumber == null) {
+            if (recipientAccountNumber == accountNumber) {
+                System.out.println("Error. The sender and the recipient have the same bank account");
                 return menuStatus;
             }
 
