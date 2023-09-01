@@ -6,6 +6,7 @@ import ru.clevertec.console.application.model.Client;
 import ru.clevertec.console.application.model.User;
 import ru.clevertec.console.application.services.BankAccountService;
 import ru.clevertec.console.application.services.ClientService;
+import ru.clevertec.console.application.utils.SQLquery;
 
 import static ru.clevertec.console.application.enums.Menu.*;
 
@@ -151,7 +152,7 @@ public class AuthorisedMenu extends AbstractMenu {
     private void identifyNewClientBankAccount() {
         //заводим клиенту счёт в Clever-Bank
         BankAccountService bankAccountService = new BankAccountService();
-        bankAccountService.createBankAccount(119, user.getClient().getID());
+        bankAccountService.createBankAccount(SQLquery.CLEVER_BANK_ID, user.getClient().getID());
         //получаем сгенерированный базой номер его счёта
         int bankAccountNumber = getNewBankAccountId(user.getClient().getID());
         //идентифицируем счёт нашего пользователя в приложении

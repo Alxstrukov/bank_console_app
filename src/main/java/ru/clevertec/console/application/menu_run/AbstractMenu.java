@@ -96,7 +96,7 @@ public abstract class AbstractMenu {
     protected boolean isEmptyInDataBaseById(int id, String query) {
         try (ResultSet resultSet = DBService.getQueryResult(query + id)) {
             return (resultSet.next());
-        } catch (SQLException e) {
+        } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
         }
         return false;

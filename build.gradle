@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id "org.flywaydb.flyway" version "7.7.0"
 }
 
 group 'org.example'
@@ -13,6 +14,7 @@ dependencies {
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.10.1'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.1.4'
     implementation group: 'org.flywaydb', name: 'flyway-maven-plugin', version: '9.21.2'
+    implementation 'org.flywaydb:flyway-core'
 
     compileOnly 'org.projectlombok:lombok:1.18.28'
     annotationProcessor 'org.projectlombok:lombok:1.18.28'
@@ -26,4 +28,10 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+flyway {
+    url = 'jdbc:postgresql://localhost:5432/postgres'
+    user = 'postgres'
+    password = 'postgres'
 }

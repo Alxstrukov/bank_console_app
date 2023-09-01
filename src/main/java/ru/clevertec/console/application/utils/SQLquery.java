@@ -4,7 +4,7 @@ public class SQLquery {
     public static final String ADD_MONEY_ENUM_DB = "ADD MONEY";
     public static final String RECEIVE_MONEY_ENUM_DB = "RECEIVE MONEY";
     public static final String TRANSFER_MONEY_ENUM_DB = "TRANSFER MONEY";
-    public static final int CLEVER_BANK_ID = 119;
+    public static final int CLEVER_BANK_ID = 100;
     public static final String CLEVER_BANK_NAME = "Clever-Bank";
     public static final String SELECT_BANK_ACCOUNTS = "SELECT clients.id as client_id,\n" +
             "       clients.last_name,\n" +
@@ -99,7 +99,7 @@ public class SQLquery {
             "  ORDER BY transactions.id\n" +
             "  DESC LIMIT 1";
     public static final String IS_CLIENT_OF_BANK = "SELECT client_id " +
-            "FROM bank_accounts WHERE bank_id = 119 AND client_id = ";
+            "FROM bank_accounts WHERE bank_id = " + CLEVER_BANK_ID + " AND client_id = ";
     public static final String IS_BANK_ACCOUNT_OF_OTHER_BANK = "SELECT account_number FROM bank_accounts WHERE account_number = ";
     public static final String IS_BANK_ACCOUNT_OF_CLEVER_BANK = "SELECT account_number" +
             " FROM bank_accounts WHERE bank_id = " + CLEVER_BANK_ID + " AND account_number = ";
@@ -108,5 +108,133 @@ public class SQLquery {
     public static final String SELECT_NEW_BANK_ACCOUNT_ID = "SELECT account_number FROM bank_accounts " +
             "WHERE client_id = %s ORDER BY bank_accounts.account_number DESC LIMIT 1;";
     public static final String SELECT_USER_ALL_BANK_ACCOUNTS = "SELECT * " +
-            "FROM bank_accounts WHERE bank_id = 119 AND client_id = ";
+            "FROM bank_accounts WHERE bank_id = " + CLEVER_BANK_ID + " AND client_id = ";
+
+    public static final String LOAD_AND_INIT_DB = "DROP TABLE if exists clients cascade ;\n" +
+            "CREATE TABLE clients\n" +
+            "(\n" +
+            "    id         int generated always as identity (start 1 ) primary key,\n" +
+            "    last_name  varchar not null,\n" +
+            "    first_name varchar not null\n" +
+            ");\n" +
+            "DROP TABLE if exists banks cascade ;\n" +
+            "CREATE TABLE banks\n" +
+            "(\n" +
+            "    id        int generated always as identity (start 100 ) primary key,\n" +
+            "    name_bank varchar not null unique\n" +
+            ");\n" +
+            "DROP TABLE if exists bank_accounts cascade ;\n" +
+            "CREATE TABLE bank_accounts\n" +
+            "(\n" +
+            "\tid serial primary key,\n" +
+            "    account_number int generated always as identity (start 1000 ) unique,\n" +
+            "    balance        double precision default 0     not null,\n" +
+            "    bank_id        integer\n" +
+            "        references banks\n" +
+            "            on delete cascade,\n" +
+            "    client_id      integer                        not null\n" +
+            "        constraint bank_accounts_clients_id_fkey\n" +
+            "            references clients\n" +
+            "            on delete cascade,\n" +
+            "    date           date             default now() not null\n" +
+            ");\n" +
+            "DROP TYPE if exists operation cascade;\n" +
+            "CREATE TYPE operation AS ENUM ('ADD MONEY', 'RECEIVE MONEY', 'TRANSFER MONEY');\n" +
+            "DROP TABLE if exists transactions cascade ;\n" +
+            "create table transactions\n" +
+            "(\n" +
+            "    id                integer generated always as identity (start 12345)\n" +
+            "        constraint transaction_pkey\n" +
+            "            primary key,\n" +
+            "    operation         operation             not null,\n" +
+            "    sender_account    integer\n" +
+            "        constraint transaction_from_bank_account_number_fkey\n" +
+            "            references bank_accounts (account_number),\n" +
+            "    recipient_account integer\n" +
+            "        constraint transaction_to_bank_account_number_fkey\n" +
+            "            references bank_accounts (account_number),\n" +
+            "    amount            double precision      not null\n" +
+            "        constraint transaction_amount_check\n" +
+            "            check (amount > (0)::double precision),\n" +
+            "    sender_bank       integer\n" +
+            "        constraint transaction_from_bank_fkey\n" +
+            "            references banks,\n" +
+            "    recipient_bank    integer\n" +
+            "        constraint transaction_to_bank_fkey\n" +
+            "            references banks,\n" +
+            "    time              time(0) default now() not null,\n" +
+            "    date              date    default now() not null\n" +
+            ");\n" +
+            "\n" +
+            "INSERT INTO clients (last_name, first_name)\n" +
+            "VALUES ('Strukov', 'Alexandr'),\n" +
+            "       ('Lebedev', 'Ivan'),\n" +
+            "       ('Ivanov', 'Petr'),\n" +
+            "       ('Gromov', 'Mishail'),\n" +
+            "       ('Vorobyova', 'Ekaterina'),\n" +
+            "       ('Grishechkina', 'Liliya'),\n" +
+            "       ('Vorobyova', 'Anna'),\n" +
+            "       ('Strukova', 'Galina'),\n" +
+            "       ('Azema', 'Svetlana'),\n" +
+            "       ('Shibailo', 'Artem'),\n" +
+            "       ('Busel', 'Klim'),\n" +
+            "       ('Sidorov', 'Evgeniy'),\n" +
+            "       ('Grib', 'Alla'),\n" +
+            "       ('Dobrova', 'Darya'),\n" +
+            "       ('Magonova', 'Valeria'),\n" +
+            "       ('Kovalev', 'Maksim'),\n" +
+            "       ('Latushev', 'Mihail'),\n" +
+            "       ('Fedorcov', 'Andrey'),\n" +
+            "       ('Grinevich', 'Pavel'),\n" +
+            "       ('Kozlov', 'Igor'),\n" +
+            "       ('Strukov', 'Evgeniy');\n" +
+            "INSERT INTO banks (name_bank)\n" +
+            "VALUES ('Clever-Bank'),\n" +
+            "       ('MTBank'),\n" +
+            "       ('Sber-Bank'),\n" +
+            "       ('Alfa-Bank'),\n" +
+            "       ('Prior-Bank'),\n" +
+            "       ('Belarus-Bank');\n" +
+            "INSERT INTO bank_accounts (balance, bank_id, client_id, date)\n" +
+            "VALUES (7100, 100, 1, '2021-12-11'),\n" +
+            "       (2500, 101, 2, '2016-10-12'),\n" +
+            "       (150, 102, 3, '2021-05-12'),\n" +
+            "       (1458, 103, 4, '2022-11-13'),\n" +
+            "       (123.25, 104, 5, '2023-06-14'),\n" +
+            "       (710.25, 100, 6, '2023-07-15'),\n" +
+            "       (1200.55, 101, 7, '2021-03-16'),\n" +
+            "       (1580, 102, 8, '2023-02-17'),\n" +
+            "       (1000.10, 103, 9, '2020-01-18'),\n" +
+            "       (140.25, 104, 10, '2020-01-19'),\n" +
+            "       (3000, 105, 11, '2008-02-20'),\n" +
+            "       (4105, 101, 12, '2019-03-21'),\n" +
+            "       (1258, 102, 13, '2018-04-22'),\n" +
+            "       (3241, 100, 14, '2017-06-23'),\n" +
+            "       (524.22, 104, 15, '2022-08-30'),\n" +
+            "       (758.33, 105, 16, '2018-09-24'),\n" +
+            "       (4450, 101, 17, '2012-10-25'),\n" +
+            "       (21508, 102, 18, '2011-12-26'),\n" +
+            "       (22.5, 100, 19, '2010-11-28'),\n" +
+            "       (2458.55, 104, 20, '2015-11-29'),\n" +
+            "       (2000, 100, 21, '2013-04-01'),\n" +
+            "       (2500, 101, 1, '2014-04-01'),\n" +
+            "       (1978.22, 102, 2, '2013-04-05'),\n" +
+            "       (1460, 103, 3, '2013-03-08'),\n" +
+            "       (7100, 100, 4, '2022-03-08'),\n" +
+            "       (1110, 105, 7, '2022-07-07'),\n" +
+            "       (5000, 101, 6, '2022-06-09'),\n" +
+            "       (6000, 102, 7, '2021-06-25'),\n" +
+            "       (8542, 103, 8, '2020-06-25'),\n" +
+            "       (2757.25, 104, 5, '2020-05-27'),\n" +
+            "       (424.5, 105, 10, '2023-02-25'),\n" +
+            "       (257.74, 101, 11, '2023-02-12'),\n" +
+            "       (4212.22, 103, 12, '2023-01-17'),\n" +
+            "       (2152, 102, 7, '2020-01-13'),\n" +
+            "       (2111, 100, 14, '2017-03-24'),\n" +
+            "       (3160, 100, 15, '2016-08-27'),\n" +
+            "       (4720, 101, 5, '2023-08-20'),\n" +
+            "       (5842, 103, 17, '2014-11-15'),\n" +
+            "       (1245, 100, 18, '2023-11-03'),\n" +
+            "       (5412.99, 102, 19, '2023-05-08'),\n" +
+            "       (6.50, 104, 20, '2021-05-09');";
 }

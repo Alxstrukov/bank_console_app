@@ -4,7 +4,9 @@ import ru.clevertec.console.application.enums.Menu;
 import ru.clevertec.console.application.menu_run.AuthorisedMenu;
 import ru.clevertec.console.application.menu_run.MainMenu;
 import ru.clevertec.console.application.model.User;
+import ru.clevertec.console.application.utils.LoadManager;
 
+import java.sql.SQLException;
 import java.util.Scanner;
 
 import static ru.clevertec.console.application.enums.Menu.AUTHORIZED;
@@ -20,7 +22,10 @@ public class ConsoleService {
 
 
     //стартануть приложение
-    public void startApp() {
+    public void startApp(boolean runType) {
+        if (runType){
+            LoadManager.loadDataBase();
+        }
         menuStatus = AUTHORIZED;
         while (menuStatus != Menu.EXIT) {
             switch (menuStatus) {

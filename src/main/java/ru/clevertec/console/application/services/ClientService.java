@@ -1,5 +1,6 @@
 package ru.clevertec.console.application.services;
 
+import org.postgresql.util.PSQLException;
 import ru.clevertec.console.application.model.Client;
 import ru.clevertec.console.application.utils.SQLquery;
 
