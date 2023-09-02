@@ -54,6 +54,9 @@ public class SQLquery {
     public static final String INSERT_TRANSACTION_ADD_MONEY = "INSERT INTO transactions" +
             "(operation, recipient_account, amount, recipient_bank)\n" +
             "VALUES ('ADD MONEY', (?), (?), (?))";
+    public static final String INSERT_TRANSACTION_ADD_PERCENT = "INSERT INTO transactions" +
+            "(operation, recipient_account, amount, recipient_bank)\n" +
+            "VALUES ('ADD PERCENT', (?), (?), (?))";
     public static final String INSERT_TRANSACTION_RECEIVE_MONEY = "INSERT INTO transactions" +
             "(operation, sender_account, amount, sender_bank)\n" +
             "VALUES ('RECEIVE MONEY', (?), (?), (?))";
@@ -140,7 +143,7 @@ public class SQLquery {
             "    date           date             default now() not null\n" +
             ");\n" +
             "DROP TYPE if exists operation cascade;\n" +
-            "CREATE TYPE operation AS ENUM ('ADD MONEY', 'RECEIVE MONEY', 'TRANSFER MONEY');\n" +
+            "CREATE TYPE operation AS ENUM ('ADD MONEY', 'RECEIVE MONEY', 'TRANSFER MONEY', 'ADD PERCENT');\n" +
             "DROP TABLE if exists transactions cascade ;\n" +
             "create table transactions\n" +
             "(\n" +

@@ -1,8 +1,8 @@
 package ru.clevertec.console.application.services;
 
 import ru.clevertec.console.application.model.BankAccount;
-import ru.clevertec.console.application.model.CheckTXT;
 import ru.clevertec.console.application.model.Transaction;
+import ru.clevertec.console.application.services.implementation.CheckTXTService;
 import ru.clevertec.console.application.utils.SQLquery;
 
 import java.math.BigDecimal;
@@ -24,7 +24,7 @@ public class OperationService {
                 e.printStackTrace();
             }
             TransactionService transactionService = new TransactionService();
-            transactionService.createTransactionAddMoney(accountNumber, amount, SQLquery.CLEVER_BANK_ID);
+            transactionService.createTransactionAddPercent(accountNumber, amount, SQLquery.CLEVER_BANK_ID);
             status = true;
         }
         return status;
@@ -44,7 +44,7 @@ public class OperationService {
             TransactionService transactionService = new TransactionService();
             transactionService.createTransactionAddMoney(bankAccount.getAccountNumber(), amount, bankAccount.getBank().getID());
             Transaction transaction = transactionService.getLatestTransactionByOperation(bankAccount.getAccountNumber(), SQLquery.SELECT_LATEST_TRANSACTION_ADD);
-            CheckTXT checkTxt = new CheckTXT();
+            CheckTXTService checkTxt = new CheckTXTService();
             checkTxt.createCheck(transaction);
             status = true;
         }
@@ -64,7 +64,7 @@ public class OperationService {
             TransactionService transactionService = new TransactionService();
             transactionService.createTransactionReceiveMoney(bankAccount.getAccountNumber(), amount, bankAccount.getBank().getID());
             Transaction transaction = transactionService.getLatestTransactionByOperation(bankAccount.getAccountNumber(), SQLquery.SELECT_LATEST_TRANSACTION_RECEIVE);
-            CheckTXT checkTxt = new CheckTXT();
+            CheckTXTService checkTxt = new CheckTXTService();
             checkTxt.createCheck(transaction);
             return true;
         }
@@ -88,7 +88,7 @@ public class OperationService {
                     bankAccountNumber,
                     bankAccount.getBank().getID(), bankId, amount);
             Transaction transaction = transactionService.getLatestTransactionByOperation(bankAccount.getAccountNumber(), SQLquery.SELECT_LATEST_TRANSACTION_TRANSFER);
-            CheckTXT checkTxt = new CheckTXT();
+            CheckTXTService checkTxt = new CheckTXTService();
             checkTxt.createCheck(transaction);
             return true;
         }

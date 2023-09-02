@@ -12,6 +12,20 @@ import java.sql.Time;
 
 public class TransactionService {
 
+    //создать транзакцию начисления в БД
+    synchronized public void createTransactionAddPercent(int accountRecipientNumber,
+                                                       BigDecimal amount, int bankRecipientId) {
+        try (PreparedStatement preparedStatement = DBService.createPreparedStatement(SQLquery.INSERT_TRANSACTION_ADD_PERCENT)) {
+            preparedStatement.setInt(1, accountRecipientNumber);
+            preparedStatement.setBigDecimal(2, amount);
+            preparedStatement.setInt(3, bankRecipientId);
+            preparedStatement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
     //создать транзакцию пополнения средств в БД
     synchronized public void createTransactionAddMoney(int accountRecipientNumber,

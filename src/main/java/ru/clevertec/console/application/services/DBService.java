@@ -1,20 +1,34 @@
 package ru.clevertec.console.application.services;
 
+import ru.clevertec.console.application.utils.PropertiesManager;
+
 import java.sql.*;
 
 public class DBService {
-    public final static String DB_NAME = "postgres";
-    public final static String DB_HOST = "localhost";
-    public final static String DB_PORT = "5432";
-    public final static String DB_USER = "postgres";
-    public final static String DB_PASS = "postgres";
-    public final static String DB_ENCODING = "?useUnicode=yes&characterEncoding=UTF-8";
-    public final static String DB_URL = "jdbc:postgresql://" + DB_HOST + ":" + DB_PORT + "/" + DB_NAME + DB_ENCODING;
-    private static Connection connection = null;
-    private static ResultSet resultSet;
+    private static final String DB_SERVER;
+    private final static String DB_NAME;
+    private final static String DB_HOST;
+    private final static String DB_PORT;
+    private final static String DB_USER;
+    private final static String DB_PASS;
+    private final static String DB_ENCODING;
+    private final static String DB_URL;
+    private static Connection connection;
     private static Statement statement;
+    private static ResultSet resultSet;
     private static PreparedStatement preparedStatement;
 
+    static {
+        connection = null;
+        DB_NAME = PropertiesManager.getConfigProperties("dbName");
+        DB_HOST = PropertiesManager.getConfigProperties("dbHost");
+        DB_PORT = PropertiesManager.getConfigProperties("dbPort");
+        DB_USER = PropertiesManager.getConfigProperties("dbUser");
+        DB_PASS = PropertiesManager.getConfigProperties("dbPass");
+        DB_ENCODING = PropertiesManager.getConfigProperties("dbEncoding");
+        DB_SERVER = PropertiesManager.getConfigProperties("jdbcServer");
+        DB_URL = DB_SERVER + DB_HOST + ":" + DB_PORT + "/" + DB_NAME + DB_ENCODING;
+    }
 
     public static Connection getConnection() {
         try {

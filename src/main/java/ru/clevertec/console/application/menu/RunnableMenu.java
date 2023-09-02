@@ -1,4 +1,4 @@
-package ru.clevertec.console.application.menu_run;
+package ru.clevertec.console.application.menu;
 
 import ru.clevertec.console.application.enums.Menu;
 

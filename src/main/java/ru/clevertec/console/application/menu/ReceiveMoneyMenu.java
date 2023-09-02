@@ -1,4 +1,4 @@
-package ru.clevertec.console.application.menu_run;
+package ru.clevertec.console.application.menu;
 
 import ru.clevertec.console.application.enums.Menu;
 import ru.clevertec.console.application.model.BankAccount;
@@ -64,6 +64,7 @@ public class ReceiveMoneyMenu extends AbstractMenu {
             OperationService operationService = new OperationService();
             if (operationService.receiveMoney(bankAccount, amount)) {
                 bankAccount.minusBalance(amount);
+
                 System.out.println("*********** Successfully receive money ***********\n");
             } else {
                 clearConsole();

@@ -1,9 +1,9 @@
-package ru.clevertec.console.application.menu_run;
+package ru.clevertec.console.application.menu;
 
 import ru.clevertec.console.application.enums.Menu;
 import ru.clevertec.console.application.model.BankAccount;
 import ru.clevertec.console.application.model.User;
-import ru.clevertec.console.application.services.BankAccountService;
+import ru.clevertec.console.application.services.implementation.BankAccountService;
 import ru.clevertec.console.application.services.OperationService;
 
 import java.math.BigDecimal;
@@ -112,6 +112,8 @@ public class TransferMoneyByOtherBankMenu extends AbstractMenu{
         OperationService operationService = new OperationService();
         if (operationService.transferMoney(bankAccount, recipientAccountNumber, recipientBankId, amount)) {
             bankAccount.minusBalance(amount);
+            user.getBankAccounts().clear();
+            readAllUserBankAccounts(user.getClient().getID());
             System.out.println("********** Successfully transfer money ***********\n");
         } else {
             clearConsole();

@@ -27,7 +27,7 @@ CREATE TABLE bank_accounts
     date           date             default now() not null
 );
 DROP TYPE if exists operation cascade;
-CREATE TYPE operation AS ENUM ('ADD MONEY', 'RECEIVE MONEY', 'TRANSFER MONEY');
+CREATE TYPE operation AS ENUM ('ADD MONEY', 'RECEIVE MONEY', 'TRANSFER MONEY', 'ADD PERCENT');
 DROP TABLE if exists transactions cascade ;
 create table transactions
 (

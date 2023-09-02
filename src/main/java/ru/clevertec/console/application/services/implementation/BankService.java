@@ -1,13 +1,15 @@
-package ru.clevertec.console.application.services;
+package ru.clevertec.console.application.services.implementation;
 
 import lombok.NoArgsConstructor;
 import ru.clevertec.console.application.model.Bank;
+import ru.clevertec.console.application.services.BankManagable;
+import ru.clevertec.console.application.services.DBService;
 import ru.clevertec.console.application.utils.SQLquery;
 
 import java.sql.*;
 
 @NoArgsConstructor
-public class BankService implements BankManagable{
+public class BankService implements BankManagable {
 
     //метод создающий Bank в БД
     public void createBank(String bankName) {

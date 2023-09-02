@@ -1,10 +1,12 @@
-package ru.clevertec.console.application.services;
+package ru.clevertec.console.application.services.implementation;
 
 
 import lombok.NoArgsConstructor;
 import ru.clevertec.console.application.model.Bank;
 import ru.clevertec.console.application.model.BankAccount;
 import ru.clevertec.console.application.model.Client;
+import ru.clevertec.console.application.services.BankAccountManagable;
+import ru.clevertec.console.application.services.DBService;
 import ru.clevertec.console.application.utils.SQLquery;
 
 import java.math.BigDecimal;

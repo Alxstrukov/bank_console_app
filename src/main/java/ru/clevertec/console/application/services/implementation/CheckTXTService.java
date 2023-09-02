@@ -1,5 +1,6 @@
-package ru.clevertec.console.application.model;
+package ru.clevertec.console.application.services.implementation;
 
+import ru.clevertec.console.application.model.Transaction;
 import ru.clevertec.console.application.services.CheckCreatable;
 import ru.clevertec.console.application.utils.SQLquery;
 
@@ -8,7 +9,7 @@ import java.io.PrintWriter;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 
-public class CheckTXT implements CheckCreatable {
+public class CheckTXTService implements CheckCreatable {
     String CHECK_PATH = "src/main/java/ru/clevertec/console/application/checks/check_";
 
     //записать чек в txt файл

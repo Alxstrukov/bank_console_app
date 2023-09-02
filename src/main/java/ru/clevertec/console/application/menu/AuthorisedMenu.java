@@ -1,11 +1,11 @@
-package ru.clevertec.console.application.menu_run;
+package ru.clevertec.console.application.menu;
 
 import ru.clevertec.console.application.enums.Menu;
 import ru.clevertec.console.application.model.BankAccount;
 import ru.clevertec.console.application.model.Client;
 import ru.clevertec.console.application.model.User;
-import ru.clevertec.console.application.services.BankAccountService;
-import ru.clevertec.console.application.services.ClientService;
+import ru.clevertec.console.application.services.implementation.BankAccountService;
+import ru.clevertec.console.application.services.implementation.ClientService;
 import ru.clevertec.console.application.utils.SQLquery;
 
 import static ru.clevertec.console.application.enums.Menu.*;

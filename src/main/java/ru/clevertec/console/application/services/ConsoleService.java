@@ -1,8 +1,9 @@
 package ru.clevertec.console.application.services;
 
+import ru.clevertec.console.application.enums.DataBase;
 import ru.clevertec.console.application.enums.Menu;
-import ru.clevertec.console.application.menu_run.AuthorisedMenu;
-import ru.clevertec.console.application.menu_run.MainMenu;
+import ru.clevertec.console.application.menu.AuthorisedMenu;
+import ru.clevertec.console.application.menu.MainMenu;
 import ru.clevertec.console.application.model.User;
 import ru.clevertec.console.application.utils.LoadManager;
 
@@ -21,8 +22,8 @@ public class ConsoleService {
 
 
     //стартануть приложение
-    public void startApp(boolean runType) {
-        if (runType){
+    public void startApp(DataBase runType) {
+        if (runType==DataBase.NEW){
             LoadManager.loadDataBase();
         }
         menuStatus = AUTHORIZED;

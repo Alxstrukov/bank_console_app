@@ -1,10 +1,9 @@
-package ru.clevertec.console.application.menu_run;
+package ru.clevertec.console.application.menu;
 
 import ru.clevertec.console.application.enums.Menu;
 import ru.clevertec.console.application.model.User;
 
 import static ru.clevertec.console.application.enums.Menu.MAIN;
-import static ru.clevertec.console.application.enums.Menu.VIEW_BALANCE;
 
 public class ViewBalanceMenu extends AbstractMenu {
     public ViewBalanceMenu(User user, Menu status) {

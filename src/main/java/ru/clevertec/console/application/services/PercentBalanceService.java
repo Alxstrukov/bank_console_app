@@ -1,7 +1,7 @@
 package ru.clevertec.console.application.services;
 
 import lombok.NoArgsConstructor;
-import ru.clevertec.console.application.model.BankAccount;
+import ru.clevertec.console.application.utils.PropertiesManager;
 import ru.clevertec.console.application.utils.SQLquery;
 
 import java.math.BigDecimal;
@@ -12,7 +12,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 @NoArgsConstructor
-public class AddPercentBalanceService extends Thread {
+public class PercentBalanceService extends Thread {
 
 
     public void run() {
@@ -40,7 +40,8 @@ public class AddPercentBalanceService extends Thread {
                 "FROM bank_accounts WHERE account_number = " + accountNumber)) {
             resultSet.next();
             BigDecimal oldBalance = resultSet.getBigDecimal("balance");
-            BigDecimal amount = addPercent(oldBalance, BigDecimal.valueOf(1));
+            BigDecimal percent = loadPercentFromConfig();
+            BigDecimal amount = addPercentToBalance(oldBalance, percent);
             OperationService operationService = new OperationService();
             operationService.addBalanceByPercentage(accountNumber, amount);
         } catch (Exception e) {
@@ -48,30 +49,22 @@ public class AddPercentBalanceService extends Thread {
         }
     }
 
-
-    //=======================НАЧИСЛЕНИЕ ПРОЦЕНТА=========================\\
-    //умножить баланс на 1%
-
-    public static BigDecimal addPercent(BigDecimal value, BigDecimal percent) {
+    //начислить на баланс n%
+    public static BigDecimal addPercentToBalance(BigDecimal value, BigDecimal percent) {
         BigDecimal percentAmount = value.divide(BigDecimal.valueOf(100));
         percentAmount = percentAmount.multiply(percent);
         //BigDecimal result = value.add(delimiter);
         return percentAmount;
     }
 
-    //=======================НАЧИСЛЕНИЕ ПРОЦЕНТА=========================\\
-
-
-    //=========================ПРОВЕРКА=================================\\
     //получить последний день текущего месяца (настоящего, в runtime)
-
     public static int getLastDay() {
         Calendar calendar = Calendar.getInstance();
         int lastDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
         return lastDay;
     }
-    //получить (число) день от сегодняшней даты
 
+    //получить (число) день сегодняшней даты
     public static int getToday() {
         String pattern = "dd-MM-yyyy";
         String dateFormat = new SimpleDateFormat(pattern).format(new Date());
@@ -79,11 +72,15 @@ public class AddPercentBalanceService extends Thread {
         int today = Integer.parseInt(split[0]);
         return today;
     }
-    //проверка, является ли сегодня последним днем месяца
 
+    //проверка, является ли сегодня последним днем месяца
     public static boolean isLastDayOfMonth() {
         return (getToday() == getLastDay()) ? true : false;
     }
 
-    //=========================ПРОВЕРКА=================================\\
+    //загрузить процент из файла конфигурации
+    public static BigDecimal loadPercentFromConfig() {
+        String percentMoney = PropertiesManager.getConfigProperties("percentMoney");
+        return new BigDecimal(percentMoney);
+    }
 }

@@ -1,12 +1,14 @@
-package ru.clevertec.console.application.services;
+package ru.clevertec.console.application.services.implementation;
 
 import org.postgresql.util.PSQLException;
 import ru.clevertec.console.application.model.Client;
+import ru.clevertec.console.application.services.ClientManagable;
+import ru.clevertec.console.application.services.DBService;
 import ru.clevertec.console.application.utils.SQLquery;
 
 import java.sql.*;
 
-public class ClientService implements ClientManagable{
+public class ClientService implements ClientManagable {
 
     public void createClient(String lastName, String firstName) {
         try (PreparedStatement ps = DBService.createPreparedStatement(SQLquery.INSERT_CLIENT);) {
