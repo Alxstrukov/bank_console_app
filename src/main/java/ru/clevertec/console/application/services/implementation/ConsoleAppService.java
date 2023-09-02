@@ -6,7 +6,6 @@ import ru.clevertec.console.application.menu.implementation.AuthorisedMenu;
 import ru.clevertec.console.application.menu.implementation.MainMenu;
 import ru.clevertec.console.application.model.User;
 import ru.clevertec.console.application.services.ApplicationRunnable;
-import ru.clevertec.console.application.services.PercentBalanceService;
 import ru.clevertec.console.application.utils.LoadManager;
 
 import java.util.Scanner;
@@ -18,7 +17,7 @@ public class ConsoleAppService implements ApplicationRunnable {
     private AuthorisedMenu authorisedMenu;
     private MainMenu mainMenu;
     private Menu menuStatus;
-    private PercentBalanceService percentThread;
+    private DayService dayService;
     private Scanner SCANNER;
     private User user;
 
@@ -27,7 +26,7 @@ public class ConsoleAppService implements ApplicationRunnable {
         user = new User();
         authorisedMenu = new AuthorisedMenu(user, menuStatus);
         mainMenu = new MainMenu(user, menuStatus);
-        percentThread = new PercentBalanceService();
+        dayService = new DayService();
     }
 
     //стартануть приложение
@@ -36,8 +35,8 @@ public class ConsoleAppService implements ApplicationRunnable {
             LoadManager.loadDataBase();
         }
         menuStatus = AUTHORIZED;
-        percentThread.setDaemon(true);
-        percentThread.start();
+        dayService.setDaemon(true);
+        dayService.start();
         while (menuStatus != Menu.EXIT) {
             switch (menuStatus) {
                 case AUTHORIZED: {
@@ -50,7 +49,7 @@ public class ConsoleAppService implements ApplicationRunnable {
                 break;
                 default: {
                     menuStatus = EXIT;
-                    percentThread.interrupt();
+                    dayService.interrupt();
                 }
                 break;
             }
