@@ -1,10 +1,12 @@
-package ru.clevertec.console.application.services;
+package ru.clevertec.console.application.services.implementation;
 
 import ru.clevertec.console.application.enums.DataBase;
 import ru.clevertec.console.application.enums.Menu;
-import ru.clevertec.console.application.menu.AuthorisedMenu;
-import ru.clevertec.console.application.menu.MainMenu;
+import ru.clevertec.console.application.menu.implementation.AuthorisedMenu;
+import ru.clevertec.console.application.menu.implementation.MainMenu;
 import ru.clevertec.console.application.model.User;
+import ru.clevertec.console.application.services.ApplicationRunnable;
+import ru.clevertec.console.application.services.PercentBalanceService;
 import ru.clevertec.console.application.utils.LoadManager;
 
 import java.util.Scanner;
@@ -12,21 +14,30 @@ import java.util.Scanner;
 import static ru.clevertec.console.application.enums.Menu.AUTHORIZED;
 import static ru.clevertec.console.application.enums.Menu.EXIT;
 
-
-public class ConsoleService {
-    private Scanner SCANNER = new Scanner(System.in);
+public class ConsoleAppService implements ApplicationRunnable {
+    private AuthorisedMenu authorisedMenu;
+    private MainMenu mainMenu;
     private Menu menuStatus;
-    private User user = new User();
-    AuthorisedMenu authorisedMenu = new AuthorisedMenu(user, menuStatus);
-    MainMenu mainMenu = new MainMenu(user, menuStatus);
+    private PercentBalanceService percentThread;
+    private Scanner SCANNER;
+    private User user;
 
+    public ConsoleAppService() {
+        SCANNER = new Scanner(System.in);
+        user = new User();
+        authorisedMenu = new AuthorisedMenu(user, menuStatus);
+        mainMenu = new MainMenu(user, menuStatus);
+        percentThread = new PercentBalanceService();
+    }
 
     //стартануть приложение
     public void startApp(DataBase runType) {
-        if (runType==DataBase.NEW){
+        if (runType == DataBase.NEW) {
             LoadManager.loadDataBase();
         }
         menuStatus = AUTHORIZED;
+        percentThread.setDaemon(true);
+        percentThread.start();
         while (menuStatus != Menu.EXIT) {
             switch (menuStatus) {
                 case AUTHORIZED: {
@@ -39,6 +50,7 @@ public class ConsoleService {
                 break;
                 default: {
                     menuStatus = EXIT;
+                    percentThread.interrupt();
                 }
                 break;
             }

@@ -1,9 +1,9 @@
-package ru.clevertec.console.application.menu;
+package ru.clevertec.console.application.menu.implementation;
 
 import ru.clevertec.console.application.enums.Menu;
 import ru.clevertec.console.application.model.BankAccount;
 import ru.clevertec.console.application.model.User;
-import ru.clevertec.console.application.services.OperationService;
+import ru.clevertec.console.application.services.implementation.OperationService;
 
 import java.math.BigDecimal;
 

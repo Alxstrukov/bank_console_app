@@ -1,8 +1,9 @@
-package ru.clevertec.console.application.menu;
+package ru.clevertec.console.application.menu.implementation;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.clevertec.console.application.enums.Menu;
+import ru.clevertec.console.application.menu.MenuRunnable;
 import ru.clevertec.console.application.model.Bank;
 import ru.clevertec.console.application.model.BankAccount;
 import ru.clevertec.console.application.model.User;
@@ -17,7 +18,7 @@ import java.util.Scanner;
 
 @NoArgsConstructor
 @Data
-public abstract class AbstractMenu implements RunnableMenu{
+public abstract class AbstractMenu implements MenuRunnable {
     protected User user;
     protected Menu menuStatus;
     protected Scanner SCANNER = new Scanner(System.in);
@@ -139,6 +140,8 @@ public abstract class AbstractMenu implements RunnableMenu{
 
     //показать инфу о банковских счетах
     protected void showListBankAccountsInfo() {
+        user.getBankAccounts().clear();
+        readAllUserBankAccounts(user.getClient().getID());
         user.getBankAccounts().stream().forEach(it -> {
             System.out.println(it.showInfoBalance());
         });

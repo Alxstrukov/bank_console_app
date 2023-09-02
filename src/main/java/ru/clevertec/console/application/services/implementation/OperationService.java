@@ -1,8 +1,9 @@
-package ru.clevertec.console.application.services;
+package ru.clevertec.console.application.services.implementation;
 
 import ru.clevertec.console.application.model.BankAccount;
 import ru.clevertec.console.application.model.Transaction;
-import ru.clevertec.console.application.services.implementation.CheckTXTService;
+import ru.clevertec.console.application.services.DBService;
+import ru.clevertec.console.application.services.OperationManagable;
 import ru.clevertec.console.application.utils.SQLquery;
 
 import java.math.BigDecimal;
@@ -10,13 +11,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class OperationService {
+public class OperationService implements OperationManagable {
 
     //начисление процента
-    public boolean addBalanceByPercentage(int accountNumber, BigDecimal amount) {
+    synchronized public boolean addBalanceByPercentage(int accountNumber, BigDecimal amount) {
         boolean status = false;
         if (!status) {
-            try (PreparedStatement ps = DBService.createPreparedStatement(SQLquery.ADD_MONEY);) {
+            try (PreparedStatement ps = DBService.createPreparedStatement(SQLquery.ADD_MONEY)) {
                 ps.setBigDecimal(1, amount);
                 ps.setInt(2, accountNumber);
                 ps.executeUpdate();
@@ -31,7 +32,7 @@ public class OperationService {
     }
 
     //операция пополнение счета
-    public boolean addMoney(BankAccount bankAccount, BigDecimal amount) {
+    synchronized public boolean addMoney(BankAccount bankAccount, BigDecimal amount) {
         boolean status = false;
         if (!status) {
             try (PreparedStatement ps = DBService.createPreparedStatement(SQLquery.ADD_MONEY);) {

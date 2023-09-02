@@ -1,4 +1,4 @@
-package ru.clevertec.console.application.menu;
+package ru.clevertec.console.application.menu.implementation;
 
 import ru.clevertec.console.application.enums.Menu;
 import ru.clevertec.console.application.model.User;

@@ -1,7 +1,9 @@
-package ru.clevertec.console.application.services;
+package ru.clevertec.console.application.services.implementation;
 
 import ru.clevertec.console.application.exception.TransactionNumberNullException;
 import ru.clevertec.console.application.model.Transaction;
+import ru.clevertec.console.application.services.DBService;
+import ru.clevertec.console.application.services.TransactionManagable;
 import ru.clevertec.console.application.utils.SQLquery;
 
 import java.math.BigDecimal;
@@ -10,11 +12,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Time;
 
-public class TransactionService {
+public class TransactionService implements TransactionManagable {
 
-    //создать транзакцию начисления в БД
+    //создать транзакцию начисления % в БД
     synchronized public void createTransactionAddPercent(int accountRecipientNumber,
-                                                       BigDecimal amount, int bankRecipientId) {
+                                                         BigDecimal amount, int bankRecipientId) {
         try (PreparedStatement preparedStatement = DBService.createPreparedStatement(SQLquery.INSERT_TRANSACTION_ADD_PERCENT)) {
             preparedStatement.setInt(1, accountRecipientNumber);
             preparedStatement.setBigDecimal(2, amount);
@@ -24,7 +26,6 @@ public class TransactionService {
             e.printStackTrace();
         }
     }
-
 
 
     //создать транзакцию пополнения средств в БД

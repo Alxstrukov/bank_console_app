@@ -1,6 +1,7 @@
 package ru.clevertec.console.application.services;
 
 import lombok.NoArgsConstructor;
+import ru.clevertec.console.application.services.implementation.OperationService;
 import ru.clevertec.console.application.utils.PropertiesManager;
 import ru.clevertec.console.application.utils.SQLquery;
 
@@ -10,17 +11,31 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 
 @NoArgsConstructor
-public class PercentBalanceService extends Thread {
+public class PercentBalanceService extends Thread implements Runnable {
 
 
     public void run() {
-
+        //начисление процентов всем  по очереди
+        while (!isInterrupted()) {
+            try {
+                Thread.sleep(30*1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            ArrayList<Integer> allBankAccounts = PercentBalanceService.getAllBankAccounts();
+            Iterator<Integer> iterator = allBankAccounts.iterator();
+            while (iterator.hasNext()) {
+                PercentBalanceService.plusBalancePercent(iterator.next());
+            }
+        }
+        System.out.println("PERCENT THREAD FINISHED");
     }
 
     //получить все номера банковских счетов в Clever-Bank (запускать буду метод только если конец месяца)
-    public static ArrayList<Integer> getAllBankAccounts() {
+    synchronized public static ArrayList<Integer> getAllBankAccounts() {
         ArrayList<Integer> accountNumbers = new ArrayList<>();
         try (ResultSet resultSet = DBService.getQueryResult("SELECT account_number " +
                 "FROM bank_accounts WHERE bank_id = " + SQLquery.CLEVER_BANK_ID)) {
@@ -35,18 +50,22 @@ public class PercentBalanceService extends Thread {
     }
 
     //начислить процент на баланс
-    public static void plusBalancePercent(int accountNumber) {
+    synchronized public static void plusBalancePercent(int accountNumber) {
+        BigDecimal amount = null;
         try (ResultSet resultSet = DBService.getQueryResult("SELECT balance " +
-                "FROM bank_accounts WHERE account_number = " + accountNumber)) {
+                "FROM bank_accounts WHERE account_number = " + accountNumber);) {
             resultSet.next();
             BigDecimal oldBalance = resultSet.getBigDecimal("balance");
+            if (oldBalance.compareTo(BigDecimal.ZERO) == 0) {
+                return;
+            }
             BigDecimal percent = loadPercentFromConfig();
-            BigDecimal amount = addPercentToBalance(oldBalance, percent);
-            OperationService operationService = new OperationService();
-            operationService.addBalanceByPercentage(accountNumber, amount);
+            amount = addPercentToBalance(oldBalance, percent);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        OperationService operationService = new OperationService();
+        operationService.addBalanceByPercentage(accountNumber, amount);
     }
 
     //начислить на баланс n%
