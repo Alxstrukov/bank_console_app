@@ -7,15 +7,23 @@ import ru.clevertec.console.application.services.DBService;
 import ru.clevertec.console.application.services.implementation.BankAccountService;
 import ru.clevertec.console.application.utils.SQLquery;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.math.BigDecimal;
-import java.sql.PreparedStatement;
+import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import static ru.clevertec.console.application.enums.Menu.MAIN;
-import static ru.clevertec.console.application.enums.Menu.TRANSFER_MONEY_BY_CLEVER_BANK;
 
 public class StatementMenu extends AbstractMenu {
+    String STATEMENT_PATH = "src/main/java/ru/clevertec/console/application/statement_money/statement_";
+
     protected StatementMenu(User user, Menu status) {
         super(user, status);
     }
@@ -35,7 +43,7 @@ public class StatementMenu extends AbstractMenu {
             System.out.println("INCORRECT INPUT DATE!");
             return menuStatus;
         }
-        return generatedStatement(startDate, endDate, accountNumber);
+        return showStatement(startDate, endDate, accountNumber);
     }
 
     //вывод меню для выписки
@@ -46,18 +54,80 @@ public class StatementMenu extends AbstractMenu {
         showListBankAccountsInfo();
     }
 
-    private Menu generatedStatement(String startDate, String endDate, int accountNumber) {
-        BigDecimal summAddMoney = getAllAddMoney(startDate, endDate, accountNumber);
-        BigDecimal summReceiveMoney = getAllReceiveMoney(startDate, endDate, accountNumber);
+    private Menu showStatement(String startDate, String endDate, int accountNumber) {
+        BigDecimal sumAddMoney = getAllAddMoney(startDate, endDate, accountNumber);
+        BigDecimal sumReceiveMoney = getAllReceiveMoney(startDate, endDate, accountNumber);
         BankAccount bankAccount = getBankAccount(accountNumber);
-        StringBuilder statement = new StringBuilder("Statement");
-        statement.append("Start Date: ").append(startDate);
-        statement.append("End Date: ").append(endDate);
-        statement.append("Sum add money= ").append(summAddMoney);
-        statement.append("Sum receive money= ").append(summReceiveMoney);
-        statement.append(bankAccount);
-        System.out.println(statement);
+        String newStartDate = convertDate(convertStringToDate(startDate));
+        String newEndDate = convertDate(convertStringToDate(endDate));
+        String timeStamp = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(Calendar.getInstance().getTime());
+        System.out.println("-----------------Money Statement-----------------");
+        System.out.println("-------------------Clever-Bank-------------------");
+        System.out.printf("Client:                | %s %s\n",
+                user.getClient().getLastName(), user.getClient().getFirstName());
+        System.out.printf("Bank account:          | %-4.4s\n", accountNumber);
+        System.out.printf("Currency:              | BYN\n");
+        System.out.printf("Creation date:         | %s\n",
+                convertDate(bankAccount.getCreationDate()));
+        System.out.printf("Period:                | %s -> %s\n", newStartDate, newEndDate);
+        System.out.printf("Date and time creation | %s\n", timeStamp);
+        System.out.printf("Balance                | %s BYN  \n", bankAccount.getBalance().setScale(2,
+                RoundingMode.HALF_EVEN));
+        System.out.printf("          ADD MONEY    |    RECEIVE MONEY\n");
+        System.out.printf("          -------------------------------\n");
+        System.out.printf("            %-5.5s BYN | -%-5.5s BYN\n\n\n", sumAddMoney, sumReceiveMoney);
+        generatedStatementTXT(startDate, endDate, accountNumber, sumAddMoney, sumReceiveMoney, bankAccount.getBalance(), bankAccount.getCreationDate());
         return (menuStatus = MAIN);
+    }
+
+    private void generatedStatementTXT(String startDate, String endDate,
+                                       int accountNumber, BigDecimal sumAddMoney,
+                                       BigDecimal sumReceiveMoney, BigDecimal balance,
+                                       Date creationdate) {
+        String date = new SimpleDateFormat("dd_MM_yyyy").format(new Date());
+        String newStartDate = convertDate(convertStringToDate(startDate));
+        String newEndDate = convertDate(convertStringToDate(endDate));
+        String timeStamp = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(Calendar.getInstance().getTime());
+        try (PrintWriter printWriter = new PrintWriter(STATEMENT_PATH + date + ".txt")) {
+            printWriter.println("---------------------Money Statement---------------------");
+            printWriter.println("-----------------------Clever-Bank-----------------------");
+            printWriter.printf("Клиент:                      | %s %s\n",
+                    user.getClient().getLastName(), user.getClient().getFirstName());
+            printWriter.printf("Счет:                        | %-4.4s\n", accountNumber);
+            printWriter.printf("Валюта:                      | BYN\n");
+            printWriter.printf("Дата открытия:               | %s\n",
+                    convertDate(creationdate));
+            printWriter.printf("Период:                      | %s -> %s\n", newStartDate, newEndDate);
+            printWriter.printf("Дата и время формирования:   | %s\n", timeStamp);
+            printWriter.printf("Остаток:                     | %s BYN  \n", balance.setScale(2,
+                    RoundingMode.HALF_EVEN));
+            printWriter.printf("                   ПРИХОД    |    УХОД\n");
+            printWriter.printf("                -------------------------------\n");
+            printWriter.printf("                  %-5.5s BYN | -%-5.5s BYN\n\n\n", sumAddMoney, sumReceiveMoney);
+            printWriter.println("---------------------------------------------------------");
+            printWriter.flush();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //сконвертировать дату в нужный формат
+    private String convertDate(Date date) {
+        String dateString = new SimpleDateFormat("dd-MM-yyyy").format(date);
+        return dateString;
+    }
+
+    //преобразовать строку в дату
+    private Date convertStringToDate(String stringDate) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = null;
+        try {
+            date = dateFormat.parse(stringDate);
+            stringDate = dateFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
     }
 
     //получить сумму пополнений
@@ -103,7 +173,7 @@ public class StatementMenu extends AbstractMenu {
             return null;
         }
         int accountNumber = SCANNER.nextInt();
-        if (!isBankAccountFromUser(accountNumber)) {
+        if (!isBankAccountOfCleverBank(accountNumber)) {
             menuStatus = MAIN;
             return null;
         }
