@@ -54,10 +54,12 @@ public class StatementMenu extends AbstractMenu {
         showListBankAccountsInfo();
     }
 
+    //вывести выписку в консоль
     private Menu showStatement(String startDate, String endDate, int accountNumber) {
         BigDecimal sumAddMoney = getAllAddMoney(startDate, endDate, accountNumber);
         BigDecimal sumReceiveMoney = getAllReceiveMoney(startDate, endDate, accountNumber);
         BankAccount bankAccount = getBankAccount(accountNumber);
+        String dateFile = new SimpleDateFormat("dd_MM_yyyy").format(new Date());
         String newStartDate = convertDate(convertStringToDate(startDate));
         String newEndDate = convertDate(convertStringToDate(endDate));
         String timeStamp = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(Calendar.getInstance().getTime());
@@ -75,11 +77,16 @@ public class StatementMenu extends AbstractMenu {
                 RoundingMode.HALF_EVEN));
         System.out.printf("          ADD MONEY    |    RECEIVE MONEY\n");
         System.out.printf("          -------------------------------\n");
-        System.out.printf("            %-5.5s BYN | -%-5.5s BYN\n\n\n", sumAddMoney, sumReceiveMoney);
+        System.out.printf("            %-5.5s BYN | -%-5.5s BYN\n", sumAddMoney, sumReceiveMoney);
+        System.out.println("\nThe statement is saved along the path: "
+                + STATEMENT_PATH
+                + dateFile
+                + ".txt\n\n\n");
         generatedStatementTXT(startDate, endDate, accountNumber, sumAddMoney, sumReceiveMoney, bankAccount.getBalance(), bankAccount.getCreationDate());
         return (menuStatus = MAIN);
     }
 
+    //записать выписку в файl
     private void generatedStatementTXT(String startDate, String endDate,
                                        int accountNumber, BigDecimal sumAddMoney,
                                        BigDecimal sumReceiveMoney, BigDecimal balance,
@@ -89,7 +96,7 @@ public class StatementMenu extends AbstractMenu {
         String newEndDate = convertDate(convertStringToDate(endDate));
         String timeStamp = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(Calendar.getInstance().getTime());
         try (PrintWriter printWriter = new PrintWriter(STATEMENT_PATH + date + ".txt")) {
-            printWriter.println("---------------------Money Statement---------------------");
+            printWriter.println("---------------------Выписка по счету--------------------");
             printWriter.println("-----------------------Clever-Bank-----------------------");
             printWriter.printf("Клиент:                      | %s %s\n",
                     user.getClient().getLastName(), user.getClient().getFirstName());
@@ -103,7 +110,7 @@ public class StatementMenu extends AbstractMenu {
                     RoundingMode.HALF_EVEN));
             printWriter.printf("                   ПРИХОД    |    УХОД\n");
             printWriter.printf("                -------------------------------\n");
-            printWriter.printf("                  %-5.5s BYN | -%-5.5s BYN\n\n\n", sumAddMoney, sumReceiveMoney);
+            printWriter.printf("                  %-5.5s BYN | -%-5.5s BYN\n", sumAddMoney, sumReceiveMoney);
             printWriter.println("---------------------------------------------------------");
             printWriter.flush();
         } catch (FileNotFoundException e) {

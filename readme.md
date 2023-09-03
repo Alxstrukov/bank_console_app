@@ -8,13 +8,90 @@
     по умолчанию установлено "percentMoney=1". При проверке и начислении работают отдельные потоки, что позволяет
     пользователю независимо использовать свои возможности в приложении.
         В приложении пользователю доступны следующие возможности:
-        * вход в приложение по своему уникальному ID номеру (соответствует номеру ID в базе данных, табл. "clients")
-        * регистрация нового клиента Clever-Bank с автоматическим заведением ему банковского счета)
-        * просмотр информации по всем своим банковским счетам (независимо в каком банке они были заведены)
-        * пополнение денежных средств любого своего банковского счета
-        * снятие денежных средств с любого своего банковского счета
-        * перевод денежных средств другому клиенту Clever-Bank (с любого своего счета относящегося к любому банку)
-        * перевод денежных средств клиенту другого банка (с любого своего счета относящегося к любому банку).
+            * вход в приложение по своему уникальному ID номеру (соответствует номеру ID в базе данных, табл. "clients")
+            * регистрация нового клиента Clever-Bank с автоматическим заведением ему банковского счета)
+            * просмотр информации по всем своим банковским счетам (независимо в каком банке они были заведены)
+            * пополнение денежных средств любого своего банковского счета
+            * снятие денежных средств с любого своего банковского счета
+            * перевод денежных средств другому клиенту Clever-Bank (с любого своего счета относящегося к любому банку)
+            * перевод денежных средств клиенту другого банка (с любого своего счета относящегося к любому банку).
+            * получение выписки по банковскому счету за определенный период
+        
+        Также в проекте были разработаны методы CRUD (create, read, update, delete) для Bank, BankAccount,
+    Client и других сущностей, данные методы используются во время работы приложения для выполнения определенных
+    задач. Описание нескольких из методов показано ниже:
+        
+            Метод создающий Bank в базе данных, принимает в качестве параметра объект класса String.
+            Делает запрос в базу данных, после чего в базе данных создается банк и ему присваивается уникальный номер
+            (для банков уникальные номера начинаются от 100, это условие было прописано в запросе SQL при
+            создании таблицы банков)
+        public void createBank(String bankName) {
+            try (PreparedStatement preparedStatement = DBService.createPreparedStatement(SQLquery.INSERT_BANK)) {
+                preparedStatement.setString(1, bankName);
+                preparedStatement.executeUpdate();
+            } catch (SQLException e) {
+            e.printStackTrace();
+                }
+        }
+    
+            Метод считывающий с базы банк по Id и возвращающий объект Bank, принимает в качестве параметра переменную
+            типа int. Делает запрос в базу данных, считывает данные и на их основе создает объект в Java
+        public Bank readBank(int bankId) {
+            try (ResultSet resultSet = DBService.getQueryResult(SQLquery.SELECT_BANKS + bankId)) {
+                resultSet.next();
+                if (resultSet.getInt("id") == bankId) {
+                    String bankName = resultSet.getString(2);
+                    return new Bank(bankId, bankName);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        Метод ищущий в базе данных банк по ID и изменяющий его название, принимает в качестве параметра
+        переменную типа int, и объект класса String. Передает запрос в базу данных, после чего происходит изменение
+        названия банка
+        public void updateBank(int bank_id, String newBankName) {
+            try (PreparedStatement preparedStatement = DBService.createPreparedStatement(SQLquery.UPDATE_BANK_BY_ID)) {
+                preparedStatement.setString(1, newBankName);
+                preparedStatement.setInt(2, bank_id);
+                preparedStatement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+    
+        Метод ищущий в базе данных банк по ID и удаляющий его. Принимает в качестве параметра переменную типа int.
+        Делает запрос в базу данных, при помощи которого происходит удаление банка id которого совпал с параметром
+        переданным в метод
+        public void deleteBank(int bankID) {
+            try (PreparedStatement preparedStatement = DBService.createPreparedStatement(SQLquery.DELETE_BANK_BY_ID)) {
+                preparedStatement.setInt(1, bankID);
+                preparedStatement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }        
+        
+        Остальные методы по реализации CRUD операций можно найти в проекте по указанному пути:
+        src/main/java/ru/clevertec/console/application/services/
+        
+        Для работы с базой данных был создан сервисный класс DBService его можно найти в проекте по указанному пути:
+        src/main/java/ru/clevertec/console/application/services/DBService.java
+    
+        Для хранения и обращения к SQL запросам использовался класс SQLquery его можно найти в проекте по указанному пути:
+        src/main/java/ru/clevertec/console/application/utils/SQLquery.java
+        
+        Реализация работы меню приложения находится в папке menu:
+        src/main/java/ru/clevertec/console/application/menu
+
+        Ссылка на проект на GitHub: 
+
+        Исходные данные для пользования приложением указаны ниже:
+            Клиент: Strukov Alexandr
+            Уникальный номер клиента ID: 1
+            Номер банковского счета: как вариант 1000
+
 
                                             Запуск приложения
       1. Перед запуском приложения необходимо в файле конфигурации (src/main/resources/config.properties)
@@ -64,6 +141,7 @@
                         3. Receive money in bank account
                         4. Transfer money to a Clever-Bank client
                         5. Transfer money to a client of another bank
+                        6. Account statment
                         0. Exit from account
 
         При вводе 2: (Become a new client at CleverBank)
@@ -87,6 +165,7 @@
                         3. Receive money in bank account
                         4. Transfer money to a Clever-Bank client
                         5. Transfer money to a client of another bank
+                        6. Account statment
                         0. Exit from account
 
         При вводе 0: (Exit the application)
@@ -107,7 +186,7 @@
                         5. Transfer money to a client of another bank
                         0. Exit from account
 
-    На данном этапе требуется ввести с консоли 1, 2, 3, 4, 5 или 0.
+    На данном этапе требуется ввести с консоли 1, 2, 3, 4, 5, 6 или 0.
     ВНИМАНИЕ!- при некорректном вводе будет выведено сообщение "INCORRECT INPUT! Enter a number"  
     
     При вводе 1: (View bank accounts balance)
@@ -314,3 +393,65 @@
     При выборе пункта меню "5" пользователь может перевести деньги с любого своего счета, на любой счет другого банка.
     Алгоритм происходит аналогично пункту главного меню "4", за исключением проверки номера счета получателя к отношению
     к Clever-Bank.
+
+    При вводе 6: (Account statemnt)
+    При выборе пункта меню "6" пользователь может получить выписку по выбранному банковскому счету за определенный
+    период времени. Для этого ему будет предложено выбрать свой номер счета Clever-Bank, дату начала транзакий, дату
+    окончания транзакций
+
+    Например:
+
+                    Please, enter the Clever-Bank client bank account number
+                    For example: 1000
+    
+    ВНИМАНИЕ!- при некорректном вводе будет выведено сообщение "INCORRECT INPUT! Enter a number" и возврат в главное меню
+    
+    Например:    
+                    Please, enter the start of the date
+                    For example: 2023-11-10
+    ВНИМАНИЕ!- при некорректном вводе будет выведено сообщение "INCORRECT DATE! Enter a number" и возврат в главное меню
+    (проверяется при помощи регулярного выражения)
+
+    Например:    
+                    Please, enter the end of the date
+                    For example: 2023-11-10
+    ВНИМАНИЕ!- при некорректном вводе будет выведено сообщение "INCORRECT DATE! Enter a number" и возврат в главное меню
+    (проверяется при помощи регулярного выражения)
+
+    При правильности введенных данных в консоль будет выведена выписка, и полный путь к файлу формата .txt в котором 
+    сохранена выписка. 
+    
+                                            ВЫВОД В КОНСОЛЬ
+
+                        -----------------Money Statement-----------------
+                        -------------------Clever-Bank-------------------
+                        Client:                | Strukov Alexandr
+                        Bank account:          | 1004
+                        Currency:              | BYN
+                        Creation date:         | 14-06-2023
+                        Period:                | 01-01-2011 -> 01-01-2024
+                        Date and time creation | 03-09-2023 23:57:02
+                        Balance                | 130.25 BYN  
+                                    ADD MONEY  |    RECEIVE MONEY
+                                    -----------------------------
+                                     17    BYN | -125   BYN
+                        The statement is saved along the path: 
+                        src/main/java/ru/clevertec/console/application/statement_money/statement_04_09_2023.txt
+
+                                            ОБРАЗЕЦ ФАЙЛА ВЫПИСКИ
+
+                        ---------------------Выписка по счету--------------------
+                        -----------------------Clever-Bank-----------------------
+                        Клиент:                      | Strukov Alexandr
+                        Счет:                        | 1004
+                        Валюта:                      | BYN
+                        Дата открытия:               | 14-06-2023
+                        Период:                      | 01-01-2011 -> 01-01-2024
+                        Дата и время формирования:   | 03-09-2023 23:57:02
+                        Остаток:                     | 130.25 BYN  
+                                           ПРИХОД    |    УХОД
+                                      ------------------------------
+                                           17    BYN | -125   BYN
+                        ---------------------------------------------------------
+
+    

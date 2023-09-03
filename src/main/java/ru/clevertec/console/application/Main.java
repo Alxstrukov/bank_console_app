@@ -6,7 +6,7 @@ import ru.clevertec.console.application.services.implementation.ConsoleAppServic
 public class Main {
     public static void main(String[] args) {
         ConsoleAppService service = new ConsoleAppService();
-        service.startApp(DataBase.OLD);
+        service.startApp(DataBase.NEW);
 
     }
 }

@@ -248,5 +248,18 @@ public class SQLquery {
             "       (5842, 103, 17, '2014-11-15'),\n" +
             "       (1245, 100, 18, '2023-11-03'),\n" +
             "       (5412.99, 102, 19, '2023-05-08'),\n" +
-            "       (6.50, 104, 20, '2021-05-09');";
+            "       (6.50, 104, 20, '2021-05-09');\n"+"" +
+            "INSERT INTO transactions (operation, sender_account, recipient_account, amount, sender_bank, recipient_bank, date)\n" +
+            "VALUES ('ADD MONEY', null, 1000, 120.5, null, 100, '2023-04-05'),\n" +
+            "        ('ADD MONEY', null, 1000, 20.5, null, 100, '2023-05-05'),\n" +
+            "        ('ADD MONEY', null, 1000, 12.5, null, 100, '2023-03-05'),\n" +
+            "        ('ADD MONEY', null, 1000, 67.5, null, 100, '2023-08-05'),\n" +
+            "        ('TRANSFER MONEY', 1000, 1004, 120.7, 104, 100, '2023-01-05'),\n" +
+            "        ('TRANSFER MONEY', 1000, 1002, 550.4, 102, 100, '2023-02-05'),\n" +
+            "        ('TRANSFER MONEY', 1000, 1003, 550.4, 103, 100, '2023-02-05'),\n" +
+            "        ('TRANSFER MONEY', 1000, 1002, 645.65, 102, 100, '2023-02-05'),\n" +
+            "        ('RECEIVE MONEY', 1000, null, 645.65, 100, null, '2023-09-01'),\n" +
+            "        ('RECEIVE MONEY', 1000, null, 1.77, 100, null, '2023-09-01'),\n" +
+            "        ('RECEIVE MONEY', 1000, null, 5.25, 100, null, '2023-09-01'),\n" +
+            "        ('RECEIVE MONEY', 1000, null, 3.34, 100, null, '2023-09-01');";
 }
