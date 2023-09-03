@@ -9,14 +9,16 @@ import java.util.Date;
 
 @NoArgsConstructor
 public class DayService extends Thread implements DateCalculatable, Runnable {
-    private AddPercentService addPercentService = new AddPercentService();
+    private AddPercentService addPercentService;
+    private boolean status = false;
 
     @Override
     public void run() {
         while (!isInterrupted()) {
             try {
-                Thread.sleep(30 * 1000);
-                if (isLastDayOfMonth()) addPercentService.start();
+                Thread.sleep(1 * 1000);
+                isAddMoneyPercent();
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -44,4 +46,20 @@ public class DayService extends Thread implements DateCalculatable, Runnable {
     public boolean isLastDayOfMonth() {
         return (getToday() == getLastDay()) ? true : false;
     }
+
+    //провер€ет начисл€лись ли в этом мес€це в последний день проценты
+    // (если нет, возвращает true, это говорит о том, что нужно вызвать поток который начислит проценты)
+    /*—начала провер€ет, последний ли день и было ли начисление в этом мес€це.
+     * «атем провер€ет, если сегодн€ не последний день мес€ца, то переводит флаг status в положение false, что означает,
+     * что в новом мес€це ещЄ проценты не начисл€лись.  ак только наступит последний день, перва€ проверка переведЄт флаг,
+     * в положение false*/
+    private void isAddMoneyPercent() {
+        if (isLastDayOfMonth() && !status) {
+            addPercentService = new AddPercentService();
+            addPercentService.start();
+            status = true;
+        }
+        if (!isLastDayOfMonth()) status = false;
+    }
+
 }
