@@ -85,7 +85,7 @@
         Реализация работы меню приложения находится в папке menu:
         src/main/java/ru/clevertec/console/application/menu
 
-        Ссылка на проект на GitHub: 
+        Ссылка на проект на GitHub: https://github.com/Alxstrukov/bank_console_app/tree/feature 
 
         Исходные данные для пользования приложением указаны ниже:
             Клиент: Strukov Alexandr
