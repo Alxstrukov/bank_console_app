@@ -113,6 +113,14 @@ public class SQLquery {
     public static final String SELECT_USER_ALL_BANK_ACCOUNTS = "SELECT * FROM bank_accounts\n" +
             "LEFT JOIN banks  on bank_accounts.bank_id = banks.id\n" +
             "WHERE client_id = ";
+    public static final String GET_ALL_ADD_MONEY= "SELECT sum(amount)\n" +
+            "FROM transactions\n" +
+            "WHERE recipient_account = %d\n" +
+            "  AND (operation = 'TRANSFER MONEY' or operation = 'ADD MONEY' or operation = 'ADD PERCENT') AND (date >= '%s' AND date <= '%s');";
+    public static final String GET_ALL_RECEIVE_MONEY= "SELECT sum(amount)\n" +
+            "FROM transactions\n" +
+            "WHERE sender_account = %d\n" +
+            "  AND (operation = 'TRANSFER MONEY' or operation = 'RECEIVE MONEY') AND (date >= '%s' AND date <= '%s');";
 
     public static final String LOAD_AND_INIT_DB = "DROP TABLE if exists clients cascade ;\n" +
             "CREATE TABLE clients\n" +

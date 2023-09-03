@@ -1,5 +1,6 @@
 package ru.clevertec.console.application.services;
 
+import ru.clevertec.console.application.exception.NullDataBaseResponseException;
 import ru.clevertec.console.application.utils.PropertiesManager;
 
 import java.sql.*;
@@ -44,16 +45,34 @@ public class DBService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return connection;
+    return connection;
     }
 
     synchronized public static ResultSet getQueryResult(String query) {
         try {
             resultSet = createStatement().executeQuery(query);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException exception) {
+            try {
+                throw new NullDataBaseResponseException("EMPTY DATA BASE");
+            } catch (NullDataBaseResponseException nullDataBaseResponseException) {
+                System.out.println(nullDataBaseResponseException.getMessage());
+            }
         }
         return resultSet;
+    }
+
+    public static boolean isEmptyDataBase(String query) {
+        try {
+            resultSet = createStatement().executeQuery(query);
+        } catch (SQLException exception) {
+            try {
+                throw new NullDataBaseResponseException("EMPTY DATA BASE");
+            } catch (NullDataBaseResponseException nullDataBaseResponseException) {
+                System.out.println(nullDataBaseResponseException.getMessage());
+                return false;
+            }
+        }
+        return true;
     }
 
     public static Statement createStatement() {

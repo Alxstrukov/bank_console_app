@@ -6,6 +6,7 @@ import ru.clevertec.console.application.menu.implementation.AuthorisedMenu;
 import ru.clevertec.console.application.menu.implementation.MainMenu;
 import ru.clevertec.console.application.model.User;
 import ru.clevertec.console.application.services.ApplicationRunnable;
+import ru.clevertec.console.application.services.DBService;
 import ru.clevertec.console.application.utils.LoadManager;
 
 import java.util.Scanner;
@@ -31,10 +32,14 @@ public class ConsoleAppService implements ApplicationRunnable {
 
     //стартануть приложение
     public void startApp(DataBase runType) {
+        menuStatus = AUTHORIZED;
         if (runType == DataBase.NEW) {
             LoadManager.loadDataBase();
+        } else {
+            if (!DBService.isEmptyDataBase("SELECT * FROM clients, banks, bank_accounts, transactions")) {
+                menuStatus = EXIT;
+            }
         }
-        menuStatus = AUTHORIZED;
         dayService.setDaemon(true);
         dayService.start();
         while (menuStatus != Menu.EXIT) {

@@ -16,6 +16,8 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.Scanner;
 
+import static ru.clevertec.console.application.enums.Menu.TRANSFER_MONEY_BY_CLEVER_BANK;
+
 @NoArgsConstructor
 @Data
 public abstract class AbstractMenu implements MenuRunnable {
@@ -28,13 +30,11 @@ public abstract class AbstractMenu implements MenuRunnable {
         menuStatus = status;
     }
 
-    //public abstract Menu run();
-
 
     //вывод ссобщения о неверном вводе и изменние статуса меню
     protected Menu isValidInput(Menu status) {
         clearConsole();
-        System.out.println("INCORRECT INPUT! Enter a number");
+        System.out.println("INCORRECT INPUT! Enter a date");
         SCANNER.nextLine();
         return status;
     }
@@ -140,12 +140,34 @@ public abstract class AbstractMenu implements MenuRunnable {
 
     //показать инфу о банковских счетах
     protected void showListBankAccountsInfo() {
+        System.out.println("Client: " + user.getClient().getLastName()
+                + " " + user.getClient().getFirstName() + " ID: " + user.getClient().getID());
         user.getBankAccounts().clear();
         readAllUserBankAccounts(user.getClient().getID());
         user.getBankAccounts().stream().forEach(it -> {
-            System.out.println(it.showInfoBalance());
+            System.out.printf(it.showInfoBalance());
         });
         System.out.println();
+    }
+
+    //получить данные от пользователя (сумму)
+    protected BigDecimal getInputAmount() {
+        System.out.println("Please, enter the amount");
+        System.out.printf("For example: 107,50\n");
+        if (!SCANNER.hasNextBigDecimal()) {
+            System.out.println("INCORRECT INPUT! Enter a number");
+            SCANNER.nextLine();
+            menuStatus = TRANSFER_MONEY_BY_CLEVER_BANK;
+            return null;
+        }
+        BigDecimal amount = new BigDecimal(SCANNER.nextInt());
+
+        if (amount.compareTo(BigDecimal.ZERO) == 0) {
+            System.out.println("INCORRECT INPUT! Amount = 0");
+            menuStatus = TRANSFER_MONEY_BY_CLEVER_BANK;
+            return null;
+        }
+        return amount;
     }
 
 

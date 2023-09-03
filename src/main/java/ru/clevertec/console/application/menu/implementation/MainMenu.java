@@ -11,6 +11,7 @@ public class MainMenu extends AbstractMenu {
     private ReceiveMoneyMenu receiveMoneyMenu = new ReceiveMoneyMenu(user, menuStatus);
     private TransferMoneyByCleverBankMenu transferClever = new TransferMoneyByCleverBankMenu(user, menuStatus);
     private TransferMoneyByOtherBankMenu transferOther = new TransferMoneyByOtherBankMenu(user, menuStatus);
+    private StatementMenu statementMenu = new StatementMenu(user, menuStatus);
 
     public MainMenu(User user, Menu status) {
         super(user, status);
@@ -47,7 +48,7 @@ public class MainMenu extends AbstractMenu {
                 }
                 break;
                 case 6: {
-                    menuStatus = AUTHORIZED;
+                    runStatementMenu();
                 }
                 break;
                 default: {
@@ -107,5 +108,12 @@ public class MainMenu extends AbstractMenu {
         transferOther.setMenuStatus(menuStatus);
         transferOther.setUser(user);
         transferOther.run();
+    }
+
+    //вызов меню получения выписки
+    private void runStatementMenu(){
+        statementMenu.setMenuStatus(menuStatus);
+        statementMenu.setUser(user);
+        statementMenu.run();
     }
 }

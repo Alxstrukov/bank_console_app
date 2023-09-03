@@ -49,16 +49,10 @@ public class ReceiveMoneyMenu extends AbstractMenu {
             System.out.println("Bank account is not found");
             menuStatus = RECEIVE_MONEY;
         } else {
-            System.out.printf("\n Please, enter the amount\n");
-            System.out.printf("For example: 3,44\n");
-
-            if (!SCANNER.hasNextBigDecimal()) {
-                System.out.println("INCORRECT INPUT! Enter a number");
-                SCANNER.nextLine();
+            BigDecimal amount = getInputAmount();
+            if (amount == null) {
                 return menuStatus;
             }
-
-            BigDecimal amount = SCANNER.nextBigDecimal();
             BankAccount bankAccount = getBankAccountByAccountNumber(accountNumber);
 
             OperationService operationService = new OperationService();

@@ -50,16 +50,10 @@ public class AddMoneyMenu extends AbstractMenu {
             System.out.println("Bank account is not found");
             menuStatus = ADD_MONEY;
         } else {
-            System.out.printf("\nPlease, enter the amount\n");
-            System.out.printf("For example: 10,75\n");
-
-            if (!SCANNER.hasNextBigDecimal()) {
-                System.out.println("INCORRECT INPUT! Enter a number");
-                SCANNER.nextLine();
+            BigDecimal amount = getInputAmount();
+            if (amount == null) {
                 return menuStatus;
             }
-
-            BigDecimal amount = SCANNER.nextBigDecimal();
             BankAccount bankAccount = getBankAccountByAccountNumber(accountNumber);
 
             OperationService operationService = new OperationService();

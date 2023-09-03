@@ -7,6 +7,7 @@ import ru.clevertec.console.application.services.implementation.OperationService
 import ru.clevertec.console.application.utils.SQLquery;
 
 import java.math.BigDecimal;
+import java.util.Scanner;
 
 import static ru.clevertec.console.application.enums.Menu.MAIN;
 import static ru.clevertec.console.application.enums.Menu.TRANSFER_MONEY_BY_CLEVER_BANK;
@@ -53,6 +54,7 @@ public class TransferMoneyByCleverBankMenu extends AbstractMenu {
             menuStatus = TRANSFER_MONEY_BY_CLEVER_BANK;
         } else {
             Integer recipientAccountNumber = getInputRecipientAccountNumber();
+            if (recipientAccountNumber == null) return menuStatus;
             if (recipientAccountNumber == accountNumber) {
                 System.out.println("Error. The sender and the recipient have the same bank account");
                 return menuStatus;
@@ -90,19 +92,6 @@ public class TransferMoneyByCleverBankMenu extends AbstractMenu {
         }
         int recipientAccountNumber = SCANNER.nextInt();
         return recipientAccountNumber;
-    }
-
-    //получить данные от пользователя (сумму)
-    private BigDecimal getInputAmount() {
-        System.out.println("Please, enter the amount");
-        System.out.printf("For example: 107,50\n");
-        if (!SCANNER.hasNextBigDecimal()) {
-            System.out.println("INCORRECT INPUT! Enter a number");
-            SCANNER.nextLine();
-            menuStatus = TRANSFER_MONEY_BY_CLEVER_BANK;
-            return null;
-        }
-        return SCANNER.nextBigDecimal();
     }
 
     //запустить перевод средств

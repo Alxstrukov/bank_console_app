@@ -86,19 +86,6 @@ public class TransferMoneyByOtherBankMenu extends AbstractMenu{
         return recipientAccountNumber;
     }
 
-    //получить данные от пользователя (сумму)
-    private BigDecimal getInputAmount() {
-        System.out.println("Please, enter the amount");
-        System.out.printf("For example: 100,45\n");
-        if (!SCANNER.hasNextBigDecimal()) {
-            System.out.println("INCORRECT INPUT! Enter a number");
-            SCANNER.nextLine();
-            menuStatus = TRANSFER_MONEY_BY_OTHER_BANK;
-            return null;
-        }
-        return SCANNER.nextBigDecimal();
-    }
-
     //получить id банка у банковского счета получателя
     private int getRecipientBankIdByAccountNumber(int accountNumber) {
         BankAccountService bankAccountService = new BankAccountService();
